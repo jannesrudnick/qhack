@@ -1,3 +1,4 @@
+
 'use client';
 import { useSupabaseBrowser } from '@/lib/supabase/client'
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query'
@@ -9,7 +10,7 @@ export default function Home() {
 
   return (
     <div>
-      <h1>Hello World</h1>
+      <h1>Hello Debug Demons</h1>
       {data?.map((item) => (
         <div key={item.id}>
           <h2>{item.test}</h2>
