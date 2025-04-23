@@ -44,7 +44,9 @@ const ShelfBox = (props: ShelfBoxProps) => {
         height: boxCoords(0.8),
       }}
     >
-      <div className="bg-white border rounded-lg flex items-center justify-center aspect-square">A1</div>
+      <div className="bg-white rounded-lg flex items-center justify-center aspect-square p-1 border border-gray-300">
+        {left}·{top}
+      </div>
     </div>
   );
 };
@@ -71,7 +73,7 @@ const Sensor = (props: SensorProps) => {
   return (
     <div
       className={clsx(
-        'absolute aspect-square border-2  rounded-full text-white p-1',
+        'absolute aspect-square border-2  rounded-full text-white p-1 z-0',
         hit ? 'bg-red-600' : 'bg-slate-600',
       )}
       data-value={measurement?.value}
@@ -82,10 +84,10 @@ const Sensor = (props: SensorProps) => {
       }}
     >
       <HoverCard>
-        <HoverCardTrigger className="cursor-pointer">
-          <p>123</p>
+        <HoverCardTrigger className="cursor-pointer relative z-0">
+          <p className="cursor-pointer">{measurement?.value.toString().slice(0, 3) || '-'}</p>
         </HoverCardTrigger>
-        <HoverCardContent side="right">
+        <HoverCardContent side="right" sideOffset={10}>
           <SensorOverlay id={JSON.stringify(props.config.position)} />
         </HoverCardContent>
       </HoverCard>

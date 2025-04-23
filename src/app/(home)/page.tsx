@@ -2,13 +2,12 @@
 import { CreateStock } from '@/components/create-stock';
 import FloorMap, { IMeasurementsContextValue, MeasurementsContext } from '@/components/floor-map';
 import HeatmapOverlay from '@/components/heatmap-overlay';
-import IconButton from '@/components/icon-button';
 import TimeLineWrapper, { roundDate5Min } from '@/components/timeline-wrapper';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { addMinutes, subMinutes } from 'date-fns';
-import { EllipsisVertical, Map as LucideMap, User2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import Header from './header';
 
 type Point = {
   x: number;
@@ -106,34 +105,15 @@ export default function Home() {
     <MeasurementsContext.Provider value={measurmentsCtxValue}>
       <div className="flex flex-col">
         <div className="min-h-screen w-full bg-linear-to-bl from-violet-200 to-fuchsia-200 p-10">
-          <div className="flex justify-between">
-            <div className="h-14 bg-white rounded-full px-4 flex items-center justify-center">
-              Unser<b>Logo</b>
-            </div>
-            <div className="flex gap-4 items-center">
-              <IconButton icon={<LucideMap />} />
-              <IconButton icon={<User2 />} />
-              <IconButton icon={<EllipsisVertical />} />
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <div className="flex items-center my-6">
-              <div className="flex flex-col">
-                <p className="text-gray-500">Comprehensive Insights</p>
-                <p className="font-bold">Executive Overview</p>
-              </div>
-              <div className="ml-auto"></div>
-            </div>
-            <div className="ml-auto"></div>
-          </div>
+          <Header />
           <TimeLineWrapper
             markers={measurmentsCtxValue.timelineMarkers}
             setSelectedTime={setSelectedTime}
             selectedTime={selectedTime}
           />
-          <div ref={heatmapRef} className="mb-4 dots glass-card relative overflow-hidden pointer-events-none">
+          <div ref={heatmapRef} className="mb-4 dots glass-card relative overflow-hidden">
             <FloorMap />
-            <div className="absolute inset-0 ">
+            <div className="absolute inset-0 pointer-events-none pointer-none">
               {heatmapSize.width > 0 && heatmapSize.height > 0 && (
                 <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points} />
               )}
