@@ -6,8 +6,7 @@ import IconButton from '@/components/icon-button';
 import TimeLineWrapper from '@/components/timeline-wrapper';
 import { Button } from '@/components/ui/button';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
-import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
-import { ChartBar, Lightbulb, Link2, MapIcon } from 'lucide-react';
+import { EllipsisVertical, Map, User2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 type Point = {
@@ -15,7 +14,7 @@ type Point = {
   y: number;
   value: number;
   createdAt: Date;
-}
+};
 
 const points1: Point[] = [
   { x: 0, y: 0, value: 15, createdAt: new Date() },
@@ -65,6 +64,13 @@ export default function Home() {
           <div className="h-14 bg-white rounded-full px-4 flex items-center justify-center">
             Unser<b>Logo</b>
           </div>
+          <div className="flex gap-4 items-center">
+            <IconButton icon={<Map />} />
+            <IconButton icon={<User2 />} />
+            <IconButton icon={<EllipsisVertical />} />
+          </div>
+        </div>
+        <div className="flex justify-between">
           <div className="flex items-center my-6">
             <div className="flex flex-col">
               <p className="text-gray-500">Comprehensive Insights</p>
