@@ -1,17 +1,33 @@
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 import { Card, CardContent } from './ui/card';
 import { ChartContainer } from './ui/chart';
-function SensorOverlay({ id }: { id: string }) {
-  //onmount daten von sensor streamen
+import { ISensorConfig } from './locations';
+import { useSupabaseBrowser } from '@/lib/supabase/client';
+import { useQuery, useSubscription } from '@supabase-cache-helpers/postgrest-react-query';
 
-  const chartData = [
-    { month: '08', desktop: 103 },
-    { month: '09', desktop: 105 },
-    { month: '10', desktop: 111 },
-    { month: '11', desktop: 121 },
-    { month: '12', desktop: 160 },
-    { month: '13', desktop: 190 },
-  ];
+function SensorOverlay({ sensorConfig, displayId }: { sensorConfig: ISensorConfig, displayId: string }) {
+  const supabase = useSupabaseBrowser();
+  const { data: sensorData } = useQuery(supabase
+    .from('measurements_simulation')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .match({ 
+      location_shelf_idx: sensorConfig.shelfIdx,
+      location_floor: sensorConfig.floor,
+      location_sensor_idx: sensorConfig.inShelfIdx,
+    }).single().throwOnError());
+
+  const { data: hourlyData } = useQuery(supabase.rpc('get_hourly_measurements', {
+    _location_sensor_idx: sensorConfig.inShelfIdx,
+    _location_shelf_idx: sensorConfig.shelfIdx,
+    _location_floor: sensorConfig.floor,
+  }).throwOnError());
+
+  const chartData = hourlyData?.map((data) => ({
+    month: new Date(data.hour).getHours(),
+    desktop: data.total_value,
+  }));
 
   const chartConfig = {
     desktop: {
@@ -23,12 +39,12 @@ function SensorOverlay({ id }: { id: string }) {
   return (
     <Card className="relative z-90">
       <CardContent className="p-4">
-        <p className=" font-bold">Sensor #1</p>
+        <p className=" font-bold">Sensor #{displayId}</p>
 
         <ChartContainer config={chartConfig} className="w-48 aspect-square">
           <AreaChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
-            <XAxis dataKey="month" tickLine={false} axisLine={false} tickFormatter={(value) => value.slice(0, 3)} />
+            <XAxis dataKey="month" tickLine={false} axisLine={false} tickFormatter={(value) => value} />
             <Area
               dataKey="desktop"
               type="natural"
@@ -38,24 +54,28 @@ function SensorOverlay({ id }: { id: string }) {
             />
           </AreaChart>
         </ChartContainer>
-        <div className="flex justify-between">
-          <span className="text-sm">Current VOC:</span>
-          <span className="font-bold text-sm text-red-700">1503ppm</span>
-        </div>
-        <div className="border-b my-2"></div>
-        <div className="flex justify-between">
-          <span className="text-sm">Current Temp:</span>
-          <span className="font-bold text-sm">7°C</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-sm">Current Humidity:</span>
-          <span className="font-bold text-sm">67%</span>
-        </div>
+        {sensorData ? (
+          <>
+            <div className="flex justify-between">
+              <span className="text-sm">Current VOC:</span>
+              <span className="font-bold text-sm text-red-700">{sensorData?.value}ppm</span>
+            </div>
+            <div className="border-b my-2"></div>
+            <div className="flex justify-between">
+              <span className="text-sm">Current Temp:</span>
+              <span className="font-bold text-sm">{sensorData?.value_temperature} °C</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm">Current Humidity:</span>
+              <span className="font-bold text-sm">{sensorData?.value_humidity}%</span>
+            </div>
+          </>
+        ) : (
+          <div className="flex justify-center items-center h-full">
+            <p className="text-sm">No data</p>
+          </div>
+        )}
 
-        <div className="flex justify-between">
-          <span className="text-sm">Current Humidity:</span>
-          <span className="font-bold text-sm">67%</span>
-        </div>
       </CardContent>
     </Card>
   );

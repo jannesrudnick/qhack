@@ -6,6 +6,8 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@radix-ui/react-h
 import { clsx } from 'clsx';
 import React, { ReactNode, useContext, useMemo } from 'react';
 import SensorOverlay from './sensor-overlay';
+import { useQuery, useSubscription } from '@supabase-cache-helpers/postgrest-react-query';
+import { useSupabaseBrowser } from '@/lib/supabase/client';
 
 export interface IMeasurementsContextValue {
   timelineMarkers: ITimelineMarker[];
@@ -70,6 +72,39 @@ const Sensor = (props: SensorProps) => {
   const measurement = ctx?.relevantBySensor.get(location);
   const hit = (measurement?.value ?? 0) > 0;
 
+  const supabase = useSupabaseBrowser();
+  const { data: sensorData, refetch } = useQuery(supabase
+    .from('measurements_simulation')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .match({ 
+      location_shelf_idx: config.shelfIdx,
+      location_floor: config.floor,
+      location_sensor_idx: config.inShelfIdx,
+    })
+    .maybeSingle()
+    .throwOnError()
+  );
+
+  const { status: subscriptionStatus } = useSubscription(
+    supabase,
+    `live`,
+    {
+      event: '*',
+      table: 'measurements_simulation',
+      schema: 'public',
+    },
+    ['id'],
+    {
+      callback: async (payload) => {
+        console.log('payload', payload);
+        await refetch();
+
+      },
+    },
+  );
+
   return (
     <div
       className={clsx(
@@ -85,10 +120,10 @@ const Sensor = (props: SensorProps) => {
     >
       <HoverCard>
         <HoverCardTrigger className="cursor-pointer relative z-0">
-          <p className="cursor-pointer">{measurement?.value.toString().slice(0, 3) || '-'}</p>
+          <p className="cursor-pointer">{sensorData?.value ? Math.round(sensorData.value) : '-'}</p>
         </HoverCardTrigger>
         <HoverCardContent side="right" sideOffset={10}>
-          <SensorOverlay id={JSON.stringify(props.config.position)} />
+          <SensorOverlay sensorConfig={props.config} displayId={`${props.config.shelfIdx}-${props.config.floor}-${props.config.inShelfIdx}`} />
         </HoverCardContent>
       </HoverCard>
     </div>

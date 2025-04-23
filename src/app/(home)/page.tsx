@@ -56,7 +56,6 @@ export default function Home() {
     date.setHours(parseInt(hours ?? '0'));
     date.setMinutes(parseInt(minutes ?? '0'));
     const filteredPoints = initPoints.filter((point) => {
-      console.log(point.createdAt, date, point.createdAt > date);
       return point.createdAt >= subMinutes(date, 30) && point.createdAt <= addMinutes(date, 30);
     });
     setPoints(filteredPoints);

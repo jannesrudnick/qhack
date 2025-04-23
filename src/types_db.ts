@@ -172,7 +172,7 @@ export type Database = {
         }
         Relationships: []
       }
-      measurements_simulation: {
+      measurements: {
         Row: {
           id: string
           location_floor: number
@@ -196,6 +196,42 @@ export type Database = {
           location_shelf_idx?: number
           time?: string
           value?: number
+        }
+        Relationships: []
+      }
+      measurements_simulation: {
+        Row: {
+          created_at: string | null
+          id: string
+          location_floor: number
+          location_sensor_idx: number
+          location_shelf_idx: number
+          time: string
+          value: number
+          value_humidity: number | null
+          value_temperature: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          location_floor: number
+          location_sensor_idx: number
+          location_shelf_idx: number
+          time?: string
+          value: number
+          value_humidity?: number | null
+          value_temperature?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          location_floor?: number
+          location_sensor_idx?: number
+          location_shelf_idx?: number
+          time?: string
+          value?: number
+          value_humidity?: number | null
+          value_temperature?: number | null
         }
         Relationships: []
       }
@@ -383,7 +419,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_hourly_measurements: {
+        Args: {
+          _location_sensor_idx: number
+          _location_shelf_idx: number
+          _location_floor: number
+        }
+        Returns: {
+          hour: string
+          total_value: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
