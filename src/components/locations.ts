@@ -6,7 +6,7 @@ const SHELF_LENGTH = 8; // shelf is 8 boxes in size
 const CORRIDOR_WIDTH = 1;
 const SENSOR_DISTANCE_FROM_BORDER = 1;
 const SENSOR_DISTANCE_BETWEEN = 2;
-const NUMBER_OF_SHELVES = 5;
+const NUMBER_OF_SHELVES = 6;
 
 // -------------------------------------------------------------------------------------------------
 // IShelfConfig

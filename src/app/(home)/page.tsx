@@ -127,6 +127,7 @@ export default function Home() {
             <div className="glass-card">
               <p>New Stock report</p>
               <p>Lorem Ipsum</p>
+              <div className=" whitespace-pre-wrap">{JSON.stringify(measurements, null, 2)}</div>
             </div>
           </div>
         </div>
