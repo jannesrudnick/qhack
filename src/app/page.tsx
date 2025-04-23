@@ -92,11 +92,6 @@ export default function Home() {
           <div className="glass-card">
             <CreateStock />
             <p>Lorem Ipsum</p>
-            {data?.map((item) => (
-              <div key={item.id}>
-                <h2>{item.test}</h2>
-              </div>
-            ))}
           </div>
           <div className="glass-card">
             <p>New Stock report</p>
@@ -104,6 +99,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-  </>
+    </div>
   );
 }
