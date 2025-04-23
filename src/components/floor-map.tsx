@@ -1,9 +1,8 @@
 'use client';
-import { Map } from 'lucide-react';
 import { IShelfConfig, ShelfConfigs } from '@/components/locations';
 import React, { ReactNode, useMemo } from 'react';
 
-const BOX_SIZE_IN_COORDS = 40;
+const BOX_SIZE_IN_COORDS = 80;
 
 function boxCoords(num: number): number {
   return num * BOX_SIZE_IN_COORDS;
@@ -25,14 +24,16 @@ const ShelfBox = (props: ShelfBoxProps) => {
 
   return (
     <div
-      className="absolute border border-slate-600"
+      className="absolute bg-gray-200 rounded-lg flex items-center justify-center"
       style={{
-        left: boxCoords(left+0.1),
-        top: boxCoords(top+0.1),
+        left: boxCoords(left + 0.1),
+        top: boxCoords(top + 0.1),
         width: boxCoords(0.8),
         height: boxCoords(0.8),
       }}
-    />
+    >
+      <div className="bg-white border rounded-lg flex items-center justify-center aspect-square">A1</div>
+    </div>
   );
 };
 
@@ -51,7 +52,7 @@ const Shelf = (props: ShelfProps) => {
 
   return (
     <div
-      className="absolute border border-blue-600"
+      className="absolute bg-white border rounded-xl"
       style={{
         left: boxCoords(config.left),
         top: boxCoords(config.top),
@@ -78,13 +79,7 @@ export default function FloorMap() {
   }, []);
 
   return (
-    <div
-      id="flor-map"
-      className="bg-white overflow-x-scroll"
-      style={{
-        height: boxCoords(sizes.height),
-      }}
-    >
+    <div id="flor-map" className="overflow-x-scroll no-scrollbar">
       <div className="p-4">
         <div
           className="relative"
@@ -98,9 +93,7 @@ export default function FloorMap() {
 
             for (let i = 0; i < config.width; i += 1) {
               for (let j = 0; j < config.height; j += 1) {
-                boxes.push(
-                  <ShelfBox key={`${i}_${j}`} left={config.left + i} top={config.top + j} />
-                );
+                boxes.push(<ShelfBox key={`${i}_${j}`} left={config.left + i} top={config.top + j} />);
               }
             }
 

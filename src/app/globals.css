@@ -143,5 +143,13 @@
 }
 
 .dots {
-  @apply bg-[radial-gradient(white_1px,transparent_1px)] bg-[length:10px_10px];
+  @apply bg-[radial-gradient(white_2px,transparent_2px)] bg-[length:20px_20px];
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
