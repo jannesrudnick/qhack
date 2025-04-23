@@ -14,7 +14,7 @@ export interface ITimelineMarker {
   value: string;
 }
 
-export default function TimeLineWrapper({ selectedTime, setSelectedTime, markers }: { markers: ITimelineMarker[]; setSelectedTime: (v: string) => void, selectedTime: string }) {
+export default function TimeLineWrapper({ selectedTime, setSelectedTime, markers }: { markers: ITimelineMarker[]; setSelectedTime: (v?: string) => void, selectedTime?: string }) {
   const handleTimeClick = (time: string) => {
     setSelectedTime(roundDate5Min(time));
     console.log(`Springe zu Zeitpunkt: ${time}`);

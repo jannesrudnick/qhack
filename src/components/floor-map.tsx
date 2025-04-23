@@ -4,10 +4,12 @@ import { ITimelineMarker } from '@/components/timeline-wrapper';
 import { Tables } from '@/types_db';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@radix-ui/react-hover-card';
 import { clsx } from 'clsx';
-import React, { ReactNode, useContext, useMemo } from 'react';
+import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import SensorOverlay from './sensor-overlay';
 import { useQuery, useSubscription } from '@supabase-cache-helpers/postgrest-react-query';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
+import { getLiveMeasurements } from '@/lib/supabase/queries';
+import { toast } from 'sonner';
 
 export interface IMeasurementsContextValue {
   timelineMarkers: ITimelineMarker[];
@@ -58,13 +60,14 @@ const ShelfBox = (props: ShelfBoxProps) => {
 
 export interface SensorProps {
   config: ISensorConfig;
+  selectedTime?: string;
 }
 
 // -------------------------------------------------------------------------------------------------
 // Sensor
 
 const Sensor = (props: SensorProps) => {
-  const { config } = props;
+  const { config, selectedTime } = props;
 
   const location = `${config.shelfIdx}_${config.floor}_${config.inShelfIdx}`;
   const ctx = useContext(MeasurementsContext);
@@ -73,19 +76,10 @@ const Sensor = (props: SensorProps) => {
   const hit = (measurement?.value ?? 0) > 0;
 
   const supabase = useSupabaseBrowser();
-  const { data: sensorData, refetch } = useQuery(supabase
-    .from('measurements_simulation')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .match({ 
-      location_shelf_idx: config.shelfIdx,
-      location_floor: config.floor,
-      location_sensor_idx: config.inShelfIdx,
-    })
-    .maybeSingle()
-    .throwOnError()
+  const { data: sensorData, refetch } = useQuery(
+    getLiveMeasurements(supabase, config, selectedTime)
   );
+
 
   const { status: subscriptionStatus } = useSubscription(
     supabase,
@@ -156,7 +150,7 @@ const Shelf = (props: ShelfProps) => {
   );
 };
 
-export default function FloorMap() {
+export default function FloorMap({ selectedTime }: { selectedTime?: string }) {
   const sizes = useMemo(() => {
     const r: Record<'width' | 'height', number> = {
       width: 0,
@@ -198,7 +192,7 @@ export default function FloorMap() {
             );
           })}
           {SensorConfigs.map((config, configIdx) => (
-            <Sensor key={configIdx} config={config} />
+            <Sensor key={configIdx} config={config} selectedTime={selectedTime} />
           ))}
           {/* - Wrapper which contains a draggable map where we render our grundriss and where you can click on certain things */}
           {/* e.g. storage boxes */}

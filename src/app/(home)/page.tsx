@@ -8,6 +8,7 @@ import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { addMinutes, subMinutes } from 'date-fns';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Header from './header';
+import { Button } from '@/components/ui/button';
 
 type Point = {
   x: number;
@@ -37,10 +38,11 @@ const initPoints: Point[] = [
 export default function Home() {
   const supabase = useSupabaseBrowser();
 
-  const [selectedTime, setSelectedTime] = useState<string>(roundDate5Min(new Date().toISOString()));
+  const [selectedTime, setSelectedTime] = useState<string>();
 
   const heatmapRef = useRef<HTMLDivElement>(null);
   const [heatmapSize, setHeatmapSize] = useState({ width: 0, height: 0 });
+  const [points, setPoints] = useState<Point[]>(initPoints);
 
   useEffect(() => {
     if (heatmapRef.current) {
@@ -58,10 +60,9 @@ export default function Home() {
     const filteredPoints = initPoints.filter((point) => {
       return point.createdAt >= subMinutes(date, 30) && point.createdAt <= addMinutes(date, 30);
     });
+
     setPoints(filteredPoints);
   }, [selectedTime]);
-
-  const [points, setPoints] = useState<Point[]>(initPoints);
 
   const { data: measurements } = useQuery(supabase.from('measurements_simulation').select());
 
@@ -72,12 +73,6 @@ export default function Home() {
     };
 
     const seenSensors = new Set<string>();
-
-    /* markers.push(
-      { time: sub(new Date(), { hours: 4 }).toISOString(), value: 'Incident' },
-      { time: sub(new Date(), { hours: 3 }).toISOString(), value: 'Incident' },
-      { time: sub(new Date(), { hours: 2 }).toISOString(), value: 'Incident' },
-    ); */
 
     if (measurements)
       for (const measurement of measurements) {
@@ -105,13 +100,22 @@ export default function Home() {
       <div className="flex flex-col">
         <div className="min-h-screen w-full bg-linear-to-bl from-violet-200 to-fuchsia-200 p-10">
           <Header />
+          {selectedTime ? (
+            <div>Looking at: {selectedTime}
+              <Button onClick={() => setSelectedTime(undefined)}>Back to live</Button>
+            </div>
+          ) : (
+            <div><div className='w-2 h-2 bg-green-400 rounded-full animate-ping' /> Live</div>
+          )}
           <TimeLineWrapper
             markers={measurmentsCtxValue.timelineMarkers}
             setSelectedTime={setSelectedTime}
             selectedTime={selectedTime}
           />
           <div ref={heatmapRef} className="mb-4 dots glass-card relative overflow-hidden">
-            <FloorMap />
+            <FloorMap 
+              selectedTime={selectedTime}
+            />
             <div className="absolute inset-0 pointer-events-none pointer-none">
               {heatmapSize.width > 0 && heatmapSize.height > 0 && (
                 <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points} />
