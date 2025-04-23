@@ -1,5 +1,5 @@
 'use client';
-import { IShelfConfig, ShelfConfigs } from '@/components/locations';
+import { ISensorConfig, IShelfConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
 import React, { ReactNode, useMemo } from 'react';
 
 const BOX_SIZE_IN_COORDS = 80;
@@ -38,6 +38,30 @@ const ShelfBox = (props: ShelfBoxProps) => {
 };
 
 // -------------------------------------------------------------------------------------------------
+// SensorProps
+
+export interface SensorProps {
+  config: ISensorConfig;
+}
+
+// -------------------------------------------------------------------------------------------------
+// Sensor
+
+const Sensor = (props: SensorProps) => {
+  const { config } = props;
+
+  return (
+    <div
+      className="absolute w-4 h-4 border-2 border-red-600 rounded-xl"
+      style={{
+        left: boxCoords(config.position.left) - 2 * 4,
+        top: boxCoords(config.position.top) - 2 * 4,
+      }}
+    ></div>
+  );
+};
+
+// -------------------------------------------------------------------------------------------------
 // ShelfProps
 
 export interface ShelfProps {
@@ -54,10 +78,10 @@ const Shelf = (props: ShelfProps) => {
     <div
       className="absolute bg-white border rounded-xl"
       style={{
-        left: boxCoords(config.left),
-        top: boxCoords(config.top),
-        width: boxCoords(config.width),
-        height: boxCoords(config.height),
+        left: boxCoords(config.rect.left),
+        top: boxCoords(config.rect.top),
+        width: boxCoords(config.rect.width),
+        height: boxCoords(config.rect.height),
       }}
     />
   );
@@ -71,8 +95,8 @@ export default function FloorMap() {
     };
 
     for (const shelf of ShelfConfigs) {
-      r.width = Math.max(shelf.left + shelf.width);
-      r.height = Math.max(shelf.top + shelf.height);
+      r.width = Math.max(shelf.rect.left + shelf.rect.width);
+      r.height = Math.max(shelf.rect.top + shelf.rect.height);
     }
 
     return r;
@@ -91,9 +115,9 @@ export default function FloorMap() {
           {ShelfConfigs.map((config, configIdx) => {
             const boxes: ReactNode[] = [];
 
-            for (let i = 0; i < config.width; i += 1) {
-              for (let j = 0; j < config.height; j += 1) {
-                boxes.push(<ShelfBox key={`${i}_${j}`} left={config.left + i} top={config.top + j} />);
+            for (let i = 0; i < config.rect.width; i += 1) {
+              for (let j = 0; j < config.rect.height; j += 1) {
+                boxes.push(<ShelfBox key={`${i}_${j}`} left={config.rect.left + i} top={config.rect.top + j} />);
               }
             }
 
@@ -104,6 +128,9 @@ export default function FloorMap() {
               </React.Fragment>
             );
           })}
+          {SensorConfigs.map((config, configIdx) => (
+            <Sensor key={configIdx} config={config} />
+          ))}
           {/* - Wrapper which contains a draggable map where we render our grundriss and where you can click on certain things */}
           {/* e.g. storage boxes */}
         </div>
