@@ -23,7 +23,7 @@ for (let i = 0; i < 8; i += 1) {
     height: BOX_SIZE * SHELF_LENGTH,
   });
 
-  left += BOX_SIZE + 2; // shelf width
+  left += BOX_SIZE * 2; // shelf width
   left += CORRIDOR_WIDTH;
 }
 

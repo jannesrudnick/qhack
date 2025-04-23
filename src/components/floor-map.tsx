@@ -82,10 +82,10 @@ export default function FloorMap() {
       id="flor-map"
       className="bg-white overflow-x-scroll"
       style={{
-        height: boxCoords(sizes.height),
+        height: boxCoords(sizes.height + 2),
       }}
     >
-      <div className="p-4">
+      <div className="p-[40px]">
         <div
           className="relative"
           style={{
