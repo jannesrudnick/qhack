@@ -10,6 +10,7 @@ import { useQuery, useSubscription } from '@supabase-cache-helpers/postgrest-rea
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { getLiveMeasurements } from '@/lib/supabase/queries';
 import { toast } from 'sonner';
+import { AnimatedNumber } from './animated-number';
 
 export interface IMeasurementsContextValue {
   timelineMarkers: ITimelineMarker[];
@@ -114,7 +115,7 @@ const Sensor = (props: SensorProps) => {
     >
       <HoverCard>
         <HoverCardTrigger className="cursor-pointer relative z-0">
-          <p className="cursor-pointer">{sensorData?.value ? Math.round(sensorData.value) : '-'}</p>
+          <AnimatedNumber value={sensorData?.value ? Math.round(sensorData.value) : 0} />
         </HoverCardTrigger>
         <HoverCardContent side="right" sideOffset={10}>
           <SensorOverlay sensorConfig={props.config} displayId={`${props.config.shelfIdx}-${props.config.floor}-${props.config.inShelfIdx}`} />
