@@ -18,8 +18,9 @@ export interface IShelfConfig {
 }
 
 export interface ISensorConfig {
-  inShelfIdx: number;
+  shelfIdx: number;
   floor: number;
+  inShelfIdx: number;
   position: ICommonPosition;
 }
 
@@ -48,8 +49,9 @@ for (let k = 0; k < FLOORS; k += 1) {
     let inShelfIdx = 0;
     for (let j = SENSOR_DISTANCE_FROM_BORDER; j < SHELF_LENGTH; j += SENSOR_DISTANCE_BETWEEN) {
       SensorConfigs.push({
-        inShelfIdx,
+        shelfIdx: i,
         floor: k,
+        inShelfIdx,
         position: {
           left: left + BOX_SIZE, // middle of shelf,
           top: top + j,

@@ -51,10 +51,10 @@ function defineOutbreak(startTime: string, fn: SensorFunction, maxValue: number,
 }
 
 const outbreaks = [
-  defineOutbreak('2025-04-22 07:00', getEthanolValue, MAX_VALUE_ETHANOL, [4, 1, 1]),
-  defineOutbreak('2025-04-22 15:00', getEthanolValue, MAX_VALUE_ETHANOL, [2, 1, 3]),
-  defineOutbreak('2025-04-23 01:00', getEthanolValue, MAX_VALUE_ETHANOL, [4, 1, 4]),
-  defineOutbreak('2025-04-23 03:00', getEthanolValue, MAX_VALUE_ETHANOL, [5, 1, 2]),
+  defineOutbreak('2025-04-22 07:00', getEthanolValue, MAX_VALUE_ETHANOL, [4, 0, 1]),
+  defineOutbreak('2025-04-22 15:00', getEthanolValue, MAX_VALUE_ETHANOL, [2, 0, 3]),
+  defineOutbreak('2025-04-23 01:00', getEthanolValue, MAX_VALUE_ETHANOL, [4, 0, 4]),
+  defineOutbreak('2025-04-23 03:00', getEthanolValue, MAX_VALUE_ETHANOL, [5, 0, 2]),
 ];
 
 interface ISimValue {

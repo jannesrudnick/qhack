@@ -1,19 +1,22 @@
 'use client';
 
 import { Timeline } from '@/components/timeline';
-import { Dispatch, useState } from 'react';
+import { Dispatch, useMemo, useState } from 'react';
+import { add, format, setHours, setMinutes, sub } from 'date-fns';
 
-export default function TimeLineWrapper({ selectedTime, setSelectedTime }: { setSelectedTime: (v: string | undefined) => void, selectedTime?: string }) {
-  // Beispieldaten für die Timeline
-  const timelineMarkers = [
-    { time: `${new Date().getHours() - 4}:00`, value: 'Incident' },
-    { time: `${new Date().getHours() - 3}:00`, value: 'Incident' },
-    { time: `${new Date().getHours() - 2}:15`, value: 'Incident' },
-  ];
+const INTERVAL_5_MIN = 5 * 60 * 1000;
+export function roundDate5Min(date: string): string {
+  return new Date(Math.round(new Date(date).getTime() / INTERVAL_5_MIN) * INTERVAL_5_MIN).toISOString();
+}
 
-  
+export interface ITimelineMarker {
+  time: string;
+  value: string;
+}
+
+export default function TimeLineWrapper({ selectedTime, setSelectedTime, markers }: { markers: ITimelineMarker[]; setSelectedTime: (v: string) => void, selectedTime: string }) {
   const handleTimeClick = (time: string) => {
-    setSelectedTime(time);
+    setSelectedTime(roundDate5Min(time));
     console.log(`Springe zu Zeitpunkt: ${time}`);
     // Hier können Sie weitere Aktionen ausführen, z.B. Daten für diesen Zeitpunkt laden
   };
@@ -49,9 +52,9 @@ export default function TimeLineWrapper({ selectedTime, setSelectedTime }: { set
       </div>
 
       <Timeline
-        startTime={`${new Date().getHours() - 5}:00`}
-        endTime={`${new Date().getHours() + 1}:00`}
-        markers={timelineMarkers}
+        startTime={setMinutes(sub(new Date(), { hours: 12 }), 0).toISOString()}
+        endTime={setMinutes(add(new Date(), { hours: 12 }), 0).toISOString()}
+        markers={markers}
         selectedTime={selectedTime}
         onTimeClick={handleTimeClick}
       />
