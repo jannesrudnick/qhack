@@ -131,9 +131,9 @@ export default function Home() {
             setSelectedTime={setSelectedTime}
             selectedTime={selectedTime}
           />
-          <div ref={heatmapRef} className="mb-4 dots glass-card relative overflow-hidden pointer-events-none">
+          <div ref={heatmapRef} className="mb-4 dots glass-card relative overflow-hidden">
             <FloorMap />
-            <div className="absolute inset-0 ">
+            <div className="absolute inset-0 pointer-events-none pointer-none">
               {heatmapSize.width > 0 && heatmapSize.height > 0 && (
                 <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points} />
               )}
