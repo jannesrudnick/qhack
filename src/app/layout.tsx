@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Krocker',
+  title: 'Q-Hack 2025',
 };
 
 export default function RootLayout({
