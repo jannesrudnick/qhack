@@ -1,9 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@theme {
+  --color-primary: #3E999A;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-main: #3E999A;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -131,4 +136,8 @@
 
 .select-line-wrapper {
   @apply grid grid-cols-[180px_1fr]
+}
+
+.glass-card {
+  @apply p-5 h-full w-full bg-gray-100/50 rounded-4xl bg-clip-padding backdrop-filter backdrop-blur-sm  border border-gray-100
 }
