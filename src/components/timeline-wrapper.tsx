@@ -1,9 +1,9 @@
 'use client';
 
 import { Timeline } from '@/components/timeline';
-import { useState } from 'react';
+import { Dispatch, useState } from 'react';
 
-export default function TimeLineWrapper() {
+export default function TimeLineWrapper({ selectedTime, setSelectedTime }: { setSelectedTime: (v: string | undefined) => void, selectedTime?: string }) {
   // Beispieldaten für die Timeline
   const timelineMarkers = [
     { time: '9:00', value: 'Incident' },
@@ -11,8 +11,7 @@ export default function TimeLineWrapper() {
     { time: '11:15', value: 'Incident' },
   ];
 
-  const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
-
+  
   const handleTimeClick = (time: string) => {
     setSelectedTime(time);
     console.log(`Springe zu Zeitpunkt: ${time}`);

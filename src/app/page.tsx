@@ -10,8 +10,41 @@ import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { ChartBar, Lightbulb, Link2, MapIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+type Point = {
+  x: number;
+  y: number;
+  value: number;
+  createdAt: Date;
+}
+
+const points1: Point[] = [
+  { x: 0, y: 0, value: 15, createdAt: new Date() },
+  { x: 1, y: 0, value: 20, createdAt: new Date(Date.now() - 1800000) }, // 30 mins ago
+  { x: 1, y: 1, value: 12, createdAt: new Date(Date.now() - 3600000) }, // 1 hour ago
+];
+
+const points2: Point[] = [
+  { x: 0, y: 0, value: 18, createdAt: new Date() },
+  { x: 1, y: 0, value: 22, createdAt: new Date(Date.now() - 600000) }, // 10 mins ago
+  { x: 1, y: 1, value: 13, createdAt: new Date(Date.now() - 1200000) }, // 20 mins ago
+  { x: 0.1, y: 0.21, value: 25, createdAt: new Date(Date.now() - 1800000) }, // 30 mins ago
+  { x: 0.1, y: 0.31, value: 16, createdAt: new Date(Date.now() - 2400000) }, // 40 mins ago
+  { x: 0.1, y: 0.41, value: 19, createdAt: new Date(Date.now() - 3000000) }, // 50 mins ago
+  { x: 0.1, y: 0.51, value: 21, createdAt: new Date(Date.now() - 3600000) }, // 1 hour ago
+  { x: 0.2, y: 0.21, value: 14, createdAt: new Date() },
+  { x: 0.2, y: 0.31, value: 17, createdAt: new Date(Date.now() - 900000) }, // 15 mins ago
+  { x: 0.2, y: 0.41, value: 23, createdAt: new Date(Date.now() - 1500000) }, // 25 mins ago
+  { x: 0.1, y: 0.11, value: 11, createdAt: new Date(Date.now() - 2100000) }, // 35 mins ago
+  { x: 0.23, y: 0.21, value: 24, createdAt: new Date(Date.now() - 2700000) }, // 45 mins ago
+  { x: 0.82, y: 0.41, value: 20, createdAt: new Date(Date.now() - 3300000) }, // 55 mins ago
+  { x: 0.26, y: 0.21, value: 15, createdAt: new Date() },
+  { x: 0.16, y: 0.31, value: 10, createdAt: new Date(Date.now() - 1800000) }, // 30 mins ago
+];
+
 export default function Home() {
   const supabase = useSupabaseBrowser();
+
+  const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
 
   const heatmapRef = useRef<HTMLDivElement>(null);
   const [heatmapSize, setHeatmapSize] = useState({ width: 0, height: 0 });
@@ -23,30 +56,7 @@ export default function Home() {
     }
   }, []);
 
-  const points1 = [
-    { x: 0, y: 0 },
-    { x: 1, y: 0, value: 1 },
-    { x: 1, y: 1 },
-  ];
-
-  const points2 = [
-    { x: 0, y: 0 },
-    { x: 1, y: 0 },
-    { x: 1, y: 1 },
-    { x: 0.1, y: 0.21 },
-    { x: 0.1, y: 0.31 },
-    { x: 0.1, y: 0.41 },
-    { x: 0.1, y: 0.51, value: 2 },
-    { x: 0.2, y: 0.21 },
-    { x: 0.2, y: 0.31 },
-    { x: 0.2, y: 0.41 },
-    { x: 0.1, y: 0.11 },
-    { x: 0.23, y: 0.21 },
-    { x: 0.82, y: 0.41 },
-    { x: 0.26, y: 0.21 },
-    { x: 0.16, y: 0.31 },
-  ];
-  const [points, setPoints] = useState([]);
+  const [points, setPoints] = useState<Point[]>([]);
 
   return (
     <div className="flex flex-col">
@@ -62,13 +72,9 @@ export default function Home() {
             </div>
             <div className="ml-auto"></div>
           </div>
-          <TimeLineWrapper />
-          <div className="mb-4 glass-card">
-            <FloorMap />
-          </div>
           <div className="ml-auto"></div>
         </div>
-        <TimeLineWrapper />
+        <TimeLineWrapper setSelectedTime={setSelectedTime} selectedTime={selectedTime} />
         <div className="mb-4 glass-card dots">
           <FloorMap />
           <div ref={heatmapRef} className="relative  w-full aspect-video">
