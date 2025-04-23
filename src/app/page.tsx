@@ -4,7 +4,6 @@ import FloorMap from '@/components/floor-map';
 import HeatmapOverlay from '@/components/heatmap-overlay';
 import IconButton from '@/components/icon-button';
 import TimeLineWrapper from '@/components/timeline-wrapper';
-import { Button } from '@/components/ui/button';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { addMinutes, subMinutes } from 'date-fns';
 import { EllipsisVertical, Map, User2 } from 'lucide-react';
@@ -89,21 +88,11 @@ export default function Home() {
           <div className="ml-auto"></div>
         </div>
         <TimeLineWrapper setSelectedTime={setSelectedTime} selectedTime={selectedTime} />
-        <div className="mb-4 dots glass-card">
+        <div ref={heatmapRef} className="mb-4 dots glass-card relative overflow-hidden">
           <FloorMap />
-          <div ref={heatmapRef} className="absolute w-full aspect-video hidden">
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: 'url(https://axscm.wordpress.com/wp-content/uploads/2017/10/pick-frequency.png)',
-              }}
-            ></div>
+          <div className="absolute inset-0 ">
             {heatmapSize.width > 0 && heatmapSize.height > 0 && (
-              <div className="w-full h-full relative">
-                <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points} />
-                <Button onClick={() => setPoints(points)}>Points 1</Button>
-                <Button onClick={() => setPoints([])}>Clear</Button>
-              </div>
+              <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points} />
             )}
           </div>
         </div>

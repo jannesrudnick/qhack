@@ -52,12 +52,14 @@ const Sensor = (props: SensorProps) => {
 
   return (
     <div
-      className="absolute w-4 h-4 border-2 border-red-600 rounded-xl"
+      className="absolute aspect-square border-2  rounded-full bg-slate-600 text-white p-1"
       style={{
-        left: boxCoords(config.position.left) - 2 * 4,
-        top: boxCoords(config.position.top) - 2 * 4,
+        left: boxCoords(config.position.left) - 2 * 10,
+        top: boxCoords(config.position.top) - 2 * 10,
       }}
-    ></div>
+    >
+      213
+    </div>
   );
 };
 
