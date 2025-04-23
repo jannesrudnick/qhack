@@ -141,3 +141,7 @@
 .glass-card {
   @apply p-5 h-full w-full bg-gray-100/50 rounded-4xl bg-clip-padding backdrop-filter backdrop-blur-sm  border border-gray-100
 }
+
+.dots {
+  @apply bg-[radial-gradient(white_1px,transparent_1px)] bg-[length:10px_10px];
+}

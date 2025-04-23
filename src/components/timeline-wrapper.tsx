@@ -7,7 +7,7 @@ export default function TimeLineWrapper() {
   // Beispieldaten für die Timeline
   const timelineMarkers = [
     { time: '9:00', value: 'Incident' },
-    { time: '9:00', value: 'Alert' },
+    { time: '9:00', value: 'Incident' },
     { time: '11:15', value: 'Incident' },
   ];
 
