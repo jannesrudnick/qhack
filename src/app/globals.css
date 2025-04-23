@@ -139,7 +139,7 @@
 }
 
 .glass-card {
-  @apply p-5 h-full w-full bg-gray-100/50 rounded-4xl bg-clip-padding backdrop-filter backdrop-blur-sm  border border-gray-100
+  @apply p-5 h-full w-full bg-gray-100/40 rounded-4xl bg-clip-padding backdrop-filter backdrop-blur-sm  border border-gray-100
 }
 
 .dots {
