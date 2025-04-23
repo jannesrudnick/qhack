@@ -12,11 +12,13 @@ const NUMBER_OF_SHELVES = 5;
 // IShelfConfig
 
 export interface IShelfConfig {
+  idx: number;
   floor: number;
   rect: ICommonRect;
 }
 
 export interface ISensorConfig {
+  inShelfIdx: number;
   floor: number;
   position: ICommonPosition;
 }
@@ -33,6 +35,7 @@ let top = 0;
 for (let k = 0; k < FLOORS; k += 1) {
   for (let i = 0; i < NUMBER_OF_SHELVES; i += 1) {
     ShelfConfigs.push({
+      idx: i,
       floor: k,
       rect: {
         left,
@@ -42,14 +45,17 @@ for (let k = 0; k < FLOORS; k += 1) {
       },
     });
 
+    let inShelfIdx = 0;
     for (let j = SENSOR_DISTANCE_FROM_BORDER; j < SHELF_LENGTH; j += SENSOR_DISTANCE_BETWEEN) {
       SensorConfigs.push({
+        inShelfIdx,
         floor: k,
         position: {
           left: left + BOX_SIZE, // middle of shelf,
           top: top + j,
         },
       });
+      inShelfIdx += 1;
     }
 
     left += BOX_SIZE * 2; // shelf width
