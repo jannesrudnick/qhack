@@ -9,6 +9,306 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      article: {
+        Row: {
+          allergy_labels: string[] | null
+          carbon_footprint: number | null
+          category: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          ingredient_name: string | null
+          is_available: boolean | null
+          is_biological: boolean | null
+          name: string
+          nutriscore: string | null
+          nutrition_table: string | null
+          sku: string
+        }
+        Insert: {
+          allergy_labels?: string[] | null
+          carbon_footprint?: number | null
+          category?: string | null
+          description?: string | null
+          id: string
+          image_url?: string | null
+          ingredient_name?: string | null
+          is_available?: boolean | null
+          is_biological?: boolean | null
+          name: string
+          nutriscore?: string | null
+          nutrition_table?: string | null
+          sku: string
+        }
+        Update: {
+          allergy_labels?: string[] | null
+          carbon_footprint?: number | null
+          category?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          ingredient_name?: string | null
+          is_available?: boolean | null
+          is_biological?: boolean | null
+          name?: string
+          nutriscore?: string | null
+          nutrition_table?: string | null
+          sku?: string
+        }
+        Relationships: []
+      }
+      delivery: {
+        Row: {
+          customer: string
+          delivery_id: string
+          fc_id: string
+          hub_id: string | null
+          timeslot: string
+          trip_id: string | null
+        }
+        Insert: {
+          customer: string
+          delivery_id: string
+          fc_id: string
+          hub_id?: string | null
+          timeslot: string
+          trip_id?: string | null
+        }
+        Update: {
+          customer?: string
+          delivery_id?: string
+          fc_id?: string
+          hub_id?: string | null
+          timeslot?: string
+          trip_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_customer_fkey"
+            columns: ["customer"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "delivery_fc_id_fkey"
+            columns: ["fc_id"]
+            isOneToOne: false
+            referencedRelation: "fc"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "delivery_hub_id_fkey"
+            columns: ["hub_id"]
+            isOneToOne: false
+            referencedRelation: "hub"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      delivery_recipe: {
+        Row: {
+          delivery_id: string
+          recipe_id: string
+        }
+        Insert: {
+          delivery_id: string
+          recipe_id: string
+        }
+        Update: {
+          delivery_id?: string
+          recipe_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_recipe_delivery_id_fkey"
+            columns: ["delivery_id"]
+            isOneToOne: false
+            referencedRelation: "delivery"
+            referencedColumns: ["delivery_id"]
+          },
+          {
+            foreignKeyName: "delivery_recipe_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fc: {
+        Row: {
+          address: string
+          country: string
+          id: string
+        }
+        Insert: {
+          address: string
+          country: string
+          id: string
+        }
+        Update: {
+          address?: string
+          country?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      hub: {
+        Row: {
+          address: string
+          country: string
+          id: string
+        }
+        Insert: {
+          address: string
+          country: string
+          id: string
+        }
+        Update: {
+          address?: string
+          country?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      orderline: {
+        Row: {
+          delivery_id: string
+          id: string
+          quantity: number
+          sku: string
+        }
+        Insert: {
+          delivery_id: string
+          id: string
+          quantity: number
+          sku: string
+        }
+        Update: {
+          delivery_id?: string
+          id?: string
+          quantity?: number
+          sku?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orderline_delivery_id_fkey"
+            columns: ["delivery_id"]
+            isOneToOne: false
+            referencedRelation: "delivery"
+            referencedColumns: ["delivery_id"]
+          },
+        ]
+      }
+      recipe: {
+        Row: {
+          id: string
+          ingredients: Json
+          instructions: string[] | null
+          name: string
+          portion_quantity: number
+        }
+        Insert: {
+          id: string
+          ingredients: Json
+          instructions?: string[] | null
+          name: string
+          portion_quantity: number
+        }
+        Update: {
+          id?: string
+          ingredients?: Json
+          instructions?: string[] | null
+          name?: string
+          portion_quantity?: number
+        }
+        Relationships: []
+      }
+      sensors: {
+        Row: {
+          created_at: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      stock: {
+        Row: {
+          fc_id: string
+          id: string
+          is_marked_imperfect: boolean | null
+          last_delivery_timestamp: string | null
+          quantity: number
+          sku: string
+          stock_location: string
+        }
+        Insert: {
+          fc_id: string
+          id?: string
+          is_marked_imperfect?: boolean | null
+          last_delivery_timestamp?: string | null
+          quantity: number
+          sku: string
+          stock_location: string
+        }
+        Update: {
+          fc_id?: string
+          id?: string
+          is_marked_imperfect?: boolean | null
+          last_delivery_timestamp?: string | null
+          quantity?: number
+          sku?: string
+          stock_location?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_fc_id_fkey"
+            columns: ["fc_id"]
+            isOneToOne: false
+            referencedRelation: "fc"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_stock_location_fkey"
+            columns: ["stock_location"]
+            isOneToOne: false
+            referencedRelation: "stock_location"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_location: {
+        Row: {
+          created_at: string
+          floor: number | null
+          id: string
+          shelf: string
+          shelf_slot: number
+        }
+        Insert: {
+          created_at?: string
+          floor?: number | null
+          id?: string
+          shelf?: string
+          shelf_slot: number
+        }
+        Update: {
+          created_at?: string
+          floor?: number | null
+          id?: string
+          shelf?: string
+          shelf_slot?: number
+        }
+        Relationships: []
+      }
       test: {
         Row: {
           created_at: string
@@ -24,6 +324,30 @@ export type Database = {
           created_at?: string
           id?: string
           test?: string | null
+        }
+        Relationships: []
+      }
+      user: {
+        Row: {
+          address: string
+          country: string
+          house_hold_size: number
+          id: string
+          name: string
+        }
+        Insert: {
+          address: string
+          country: string
+          house_hold_size: number
+          id: string
+          name: string
+        }
+        Update: {
+          address?: string
+          country?: string
+          house_hold_size?: number
+          id?: string
+          name?: string
         }
         Relationships: []
       }
