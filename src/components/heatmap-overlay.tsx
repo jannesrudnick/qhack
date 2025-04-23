@@ -37,5 +37,5 @@ export default function HeatmapOverlay({ width, height, points }: Props) {
     });
   }, [points, width, height]);
 
-  return <div ref={containerRef} style={{ position: 'absolute', top: 0, left: 0, width, height }} />;
+  return <div className="" ref={containerRef} style={{ position: 'absolute', top: 0, left: 0, width, height }} />;
 }

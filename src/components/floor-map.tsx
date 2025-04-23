@@ -1,6 +1,8 @@
 'use client';
 import { ISensorConfig, IShelfConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@radix-ui/react-hover-card';
 import React, { ReactNode, useMemo } from 'react';
+import SensorOverlay from './sensor-overlay';
 
 const BOX_SIZE_IN_COORDS = 80;
 
@@ -52,13 +54,20 @@ const Sensor = (props: SensorProps) => {
 
   return (
     <div
-      className="absolute aspect-square border-2  rounded-full bg-slate-600 text-white p-1"
+      className="absolute aspect-square border-2 rounded-full bg-slate-600 text-white p-1 group group"
       style={{
         left: boxCoords(config.position.left) - 2 * 10,
         top: boxCoords(config.position.top) - 2 * 10,
       }}
     >
-      213
+      <HoverCard>
+        <HoverCardTrigger className="cursor-pointer">
+          <p>123</p>
+        </HoverCardTrigger>
+        <HoverCardContent side="right">
+          <SensorOverlay id={JSON.stringify(props.config.position)} />
+        </HoverCardContent>
+      </HoverCard>
     </div>
   );
 };
