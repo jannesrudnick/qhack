@@ -1,27 +1,50 @@
+import { ICommonPosition, ICommonRect } from '@/lib/types';
 
 const FLOORS = 10;
 const BOX_SIZE = 1;
 const SHELF_LENGTH = 8; // shelf is 8 boxes in size
 const CORRIDOR_WIDTH = 1;
+const SENSOR_DISTANCE_FROM_BORDER = 1;
+const SENSOR_DISTANCE_BETWEEN = 2;
+
+// -------------------------------------------------------------------------------------------------
+// IShelfConfig
 
 export interface IShelfConfig {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
+  rect: ICommonRect;
 }
 
+export interface ISensorConfig {
+  position: ICommonPosition;
+}
+
+// -------------------------------------------------------------------------------------------------
+// Compute
+
 const ShelfConfigs: IShelfConfig[] = [];
+const SensorConfigs: ISensorConfig[] = [];
 
 let left = 0;
+let top = 0;
 
 for (let i = 0; i < 8; i += 1) {
   ShelfConfigs.push({
-    left,
-    top: 0,
-    width: BOX_SIZE * 2, // two boxes depth
-    height: BOX_SIZE * SHELF_LENGTH,
+    rect: {
+      left,
+      top,
+      width: BOX_SIZE * 2, // two boxes depth
+      height: BOX_SIZE * SHELF_LENGTH,
+    },
   });
+
+  for (let j = SENSOR_DISTANCE_FROM_BORDER; j < SHELF_LENGTH; j += SENSOR_DISTANCE_BETWEEN) {
+    SensorConfigs.push({
+      position: {
+        left: left + BOX_SIZE, // middle of shelf,
+        top: top + j,
+      },
+    });
+  }
 
   left += BOX_SIZE * 2; // shelf width
   left += CORRIDOR_WIDTH;
@@ -29,4 +52,5 @@ for (let i = 0; i < 8; i += 1) {
 
 export {
   ShelfConfigs,
+  SensorConfigs,
 };
