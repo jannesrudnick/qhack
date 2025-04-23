@@ -6,9 +6,9 @@ import { Dispatch, useState } from 'react';
 export default function TimeLineWrapper({ selectedTime, setSelectedTime }: { setSelectedTime: (v: string | undefined) => void, selectedTime?: string }) {
   // Beispieldaten für die Timeline
   const timelineMarkers = [
-    { time: '9:00', value: 'Incident' },
-    { time: '9:00', value: 'Incident' },
-    { time: '11:15', value: 'Incident' },
+    { time: `${new Date().getHours() - 4}:00`, value: 'Incident' },
+    { time: `${new Date().getHours() - 3}:00`, value: 'Incident' },
+    { time: `${new Date().getHours() - 2}:15`, value: 'Incident' },
   ];
 
   
@@ -49,8 +49,8 @@ export default function TimeLineWrapper({ selectedTime, setSelectedTime }: { set
       </div>
 
       <Timeline
-        startTime="8:00"
-        endTime="12:00"
+        startTime={`${new Date().getHours() - 5}:00`}
+        endTime={`${new Date().getHours() + 1}:00`}
         markers={timelineMarkers}
         selectedTime={selectedTime}
         onTimeClick={handleTimeClick}

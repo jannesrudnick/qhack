@@ -9,6 +9,7 @@ import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { ChartBar, Lightbulb, Link2, MapIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { addMinutes, subMinutes } from 'date-fns';
 
 type Point = {
   x: number;
@@ -17,13 +18,7 @@ type Point = {
   createdAt: Date;
 }
 
-const points1: Point[] = [
-  { x: 0, y: 0, value: 15, createdAt: new Date() },
-  { x: 1, y: 0, value: 20, createdAt: new Date(Date.now() - 1800000) }, // 30 mins ago
-  { x: 1, y: 1, value: 12, createdAt: new Date(Date.now() - 3600000) }, // 1 hour ago
-];
-
-const points2: Point[] = [
+const initPoints: Point[] = [
   { x: 0, y: 0, value: 18, createdAt: new Date() },
   { x: 1, y: 0, value: 22, createdAt: new Date(Date.now() - 600000) }, // 10 mins ago
   { x: 1, y: 1, value: 13, createdAt: new Date(Date.now() - 1200000) }, // 20 mins ago
@@ -56,7 +51,20 @@ export default function Home() {
     }
   }, []);
 
-  const [points, setPoints] = useState<Point[]>([]);
+  useEffect(() => {
+    // from selectedTime as '10:30' to date object and then filter points by createdAt
+    const [hours, minutes] = selectedTime?.split(':') ?? [];
+    const date = new Date();
+    date.setHours(parseInt(hours ?? '0'));
+    date.setMinutes(parseInt(minutes ?? '0'));
+    const filteredPoints = initPoints.filter((point) => {
+      console.log(point.createdAt, date, point.createdAt > date);
+      return point.createdAt >= subMinutes(date, 30) && point.createdAt <= addMinutes(date, 30);
+    });
+    setPoints(filteredPoints);
+  }, [selectedTime]);
+
+  const [points, setPoints] = useState<Point[]>(initPoints);
 
   return (
     <div className="flex flex-col">
@@ -74,7 +82,10 @@ export default function Home() {
           </div>
           <div className="ml-auto"></div>
         </div>
-        <TimeLineWrapper setSelectedTime={setSelectedTime} selectedTime={selectedTime} />
+        <TimeLineWrapper
+          setSelectedTime={setSelectedTime} 
+          selectedTime={selectedTime} 
+        />
         <div className="mb-4 glass-card dots">
           <FloorMap />
           <div ref={heatmapRef} className="relative  w-full aspect-video">
@@ -87,8 +98,7 @@ export default function Home() {
             {heatmapSize.width > 0 && heatmapSize.height > 0 && (
               <div className="w-full h-full relative">
                 <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points} />
-                <Button onClick={() => setPoints(points2)}>Points 2</Button>
-                <Button onClick={() => setPoints(points1)}>Points 1</Button>
+                <Button onClick={() => setPoints(points)}>Points 1</Button>
                 <Button onClick={() => setPoints([])}>Clear</Button>
               </div>
             )}
