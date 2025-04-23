@@ -1,8 +1,18 @@
 'use client';
 import { ISensorConfig, IShelfConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
+import { ITimelineMarker } from '@/components/timeline-wrapper';
+import { Tables } from '@/types_db';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@radix-ui/react-hover-card';
-import React, { ReactNode, useMemo } from 'react';
+import { clsx } from 'clsx';
+import React, { ReactNode, useContext, useMemo } from 'react';
 import SensorOverlay from './sensor-overlay';
+
+export interface IMeasurementsContextValue {
+  timelineMarkers: ITimelineMarker[];
+  relevantBySensor: Map<string, Tables<'measurements_simulation'>>;
+}
+
+export const MeasurementsContext = React.createContext<IMeasurementsContextValue | null>(null);
 
 const BOX_SIZE_IN_COORDS = 80;
 
@@ -52,9 +62,20 @@ export interface SensorProps {
 const Sensor = (props: SensorProps) => {
   const { config } = props;
 
+  const location = `${config.shelfIdx}_${config.floor}_${config.inShelfIdx}`;
+  const ctx = useContext(MeasurementsContext);
+
+  const measurement = ctx?.relevantBySensor.get(location);
+  const hit = (measurement?.value ?? 0) > 0;
+
   return (
     <div
-      className="absolute aspect-square border-2 rounded-full bg-slate-600 text-white p-1 group group"
+      className={clsx(
+        'absolute aspect-square border-2  rounded-full text-white p-1',
+        hit ? 'bg-red-600' : 'bg-slate-600',
+      )}
+      data-value={measurement?.value}
+      data-location={location}
       style={{
         left: boxCoords(config.position.left) - 2 * 10,
         top: boxCoords(config.position.top) - 2 * 10,

@@ -1,13 +1,14 @@
 'use client';
 import { CreateStock } from '@/components/create-stock';
-import FloorMap from '@/components/floor-map';
+import FloorMap, { IMeasurementsContextValue, MeasurementsContext } from '@/components/floor-map';
 import HeatmapOverlay from '@/components/heatmap-overlay';
 import IconButton from '@/components/icon-button';
-import TimeLineWrapper from '@/components/timeline-wrapper';
+import TimeLineWrapper, { roundDate5Min } from '@/components/timeline-wrapper';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
+import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { addMinutes, subMinutes } from 'date-fns';
-import { EllipsisVertical, Map, User2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { EllipsisVertical, Map as LucideMap, User2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 type Point = {
   x: number;
@@ -37,7 +38,7 @@ const initPoints: Point[] = [
 export default function Home() {
   const supabase = useSupabaseBrowser();
 
-  const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState<string>(roundDate5Min(new Date().toISOString()));
 
   const heatmapRef = useRef<HTMLDivElement>(null);
   const [heatmapSize, setHeatmapSize] = useState({ width: 0, height: 0 });
@@ -64,49 +65,92 @@ export default function Home() {
 
   const [points, setPoints] = useState<Point[]>(initPoints);
 
+  const { data: measurements } = useQuery(supabase.from('measurements_simulation').select());
+
+  const measurmentsCtxValue = useMemo(() => {
+    const ctx: IMeasurementsContextValue = {
+      timelineMarkers: [],
+      relevantBySensor: new Map(),
+    };
+
+    const seenSensors = new Set<string>();
+
+    /* markers.push(
+      { time: sub(new Date(), { hours: 4 }).toISOString(), value: 'Incident' },
+      { time: sub(new Date(), { hours: 3 }).toISOString(), value: 'Incident' },
+      { time: sub(new Date(), { hours: 2 }).toISOString(), value: 'Incident' },
+    ); */
+
+    if (measurements)
+      for (const measurement of measurements) {
+        if (measurement.value <= 0) continue;
+        const location = `${measurement.location_shelf_idx}_${measurement.location_floor}_${measurement.location_sensor_idx}`;
+
+        if (!seenSensors.has(location)) {
+          seenSensors.add(location);
+          ctx.timelineMarkers.push({
+            time: measurement.time,
+            value: 'Incident',
+          });
+        }
+
+        if (new Date(measurement.time).toISOString() === selectedTime) {
+          ctx.relevantBySensor.set(location, measurement);
+        }
+      }
+
+    return ctx;
+  }, [measurements, selectedTime]);
+
   return (
-    <div className="flex flex-col">
-      <div className="min-h-screen w-full bg-linear-to-bl from-violet-200 to-fuchsia-200 p-10">
-        <div className="flex justify-between">
-          <div className="h-14 bg-white rounded-full px-4 flex items-center justify-center">
-            Unser<b>Logo</b>
+    <MeasurementsContext.Provider value={measurmentsCtxValue}>
+      <div className="flex flex-col">
+        <div className="min-h-screen w-full bg-linear-to-bl from-violet-200 to-fuchsia-200 p-10">
+          <div className="flex justify-between">
+            <div className="h-14 bg-white rounded-full px-4 flex items-center justify-center">
+              Unser<b>Logo</b>
+            </div>
+            <div className="flex gap-4 items-center">
+              <IconButton icon={<LucideMap />} />
+              <IconButton icon={<User2 />} />
+              <IconButton icon={<EllipsisVertical />} />
+            </div>
           </div>
-          <div className="flex gap-4 items-center">
-            <IconButton icon={<Map />} />
-            <IconButton icon={<User2 />} />
-            <IconButton icon={<EllipsisVertical />} />
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <div className="flex items-center my-6">
-            <div className="flex flex-col">
-              <p className="text-gray-500">Comprehensive Insights</p>
-              <p className="font-bold">Executive Overview</p>
+          <div className="flex justify-between">
+            <div className="flex items-center my-6">
+              <div className="flex flex-col">
+                <p className="text-gray-500">Comprehensive Insights</p>
+                <p className="font-bold">Executive Overview</p>
+              </div>
+              <div className="ml-auto"></div>
             </div>
             <div className="ml-auto"></div>
           </div>
-          <div className="ml-auto"></div>
-        </div>
-        <TimeLineWrapper setSelectedTime={setSelectedTime} selectedTime={selectedTime} />
-        <div ref={heatmapRef} className="mb-4 dots glass-card relative overflow-hidden">
-          <FloorMap />
-          <div className="absolute inset-0 pointer-events-none ">
-            {heatmapSize.width > 0 && heatmapSize.height > 0 && (
-              <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points} />
-            )}
+          <TimeLineWrapper
+            markers={measurmentsCtxValue.timelineMarkers}
+            setSelectedTime={setSelectedTime}
+            selectedTime={selectedTime}
+          />
+          <div ref={heatmapRef} className="mb-4 dots glass-card relative overflow-hidden pointer-events-none">
+            <FloorMap />
+            <div className="absolute inset-0 ">
+              {heatmapSize.width > 0 && heatmapSize.height > 0 && (
+                <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points} />
+              )}
+            </div>
           </div>
-        </div>
-        <div className="flex gap-4">
-          <div className="glass-card">
-            <CreateStock />
-            <p>Lorem Ipsum</p>
-          </div>
-          <div className="glass-card">
-            <p>New Stock report</p>
-            <p>Lorem Ipsum</p>
+          <div className="flex gap-4">
+            <div className="glass-card">
+              <CreateStock />
+              <p>Lorem Ipsum</p>
+            </div>
+            <div className="glass-card">
+              <p>New Stock report</p>
+              <p>Lorem Ipsum</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </MeasurementsContext.Provider>
   );
 }

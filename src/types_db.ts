@@ -172,6 +172,33 @@ export type Database = {
         }
         Relationships: []
       }
+      measurements_simulation: {
+        Row: {
+          id: string
+          location_floor: number
+          location_sensor_idx: number
+          location_shelf_idx: number
+          time: string
+          value: number
+        }
+        Insert: {
+          id?: string
+          location_floor: number
+          location_sensor_idx: number
+          location_shelf_idx: number
+          time?: string
+          value: number
+        }
+        Update: {
+          id?: string
+          location_floor?: number
+          location_sensor_idx?: number
+          location_shelf_idx?: number
+          time?: string
+          value?: number
+        }
+        Relationships: []
+      }
       orderline: {
         Row: {
           delivery_id: string
