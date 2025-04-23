@@ -81,9 +81,9 @@ export default function Home() {
           <div className="ml-auto"></div>
         </div>
         <TimeLineWrapper setSelectedTime={setSelectedTime} selectedTime={selectedTime} />
-        <div className="mb-4 glass-card dots">
+        <div className="mb-4 dots">
           <FloorMap />
-          <div ref={heatmapRef} className="relative  w-full aspect-video">
+          <div ref={heatmapRef} className="absolute w-full aspect-video hidden">
             <div
               className="absolute inset-0"
               style={{
