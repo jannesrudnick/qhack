@@ -9,6 +9,7 @@ import { addMinutes, subMinutes } from 'date-fns';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Header from './header';
 import { Button } from '@/components/ui/button';
+import { ISensorConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
 
 type Point = {
   x: number;
@@ -42,7 +43,6 @@ export default function Home() {
 
   const heatmapRef = useRef<HTMLDivElement>(null);
   const [heatmapSize, setHeatmapSize] = useState({ width: 0, height: 0 });
-  const [points, setPoints] = useState<Point[]>(initPoints);
 
   useEffect(() => {
     if (heatmapRef.current) {
@@ -51,20 +51,42 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    // from selectedTime as '10:30' to date object and then filter points by createdAt
-    const [hours, minutes] = selectedTime?.split(':') ?? [];
-    const date = new Date();
-    date.setHours(parseInt(hours ?? '0'));
-    date.setMinutes(parseInt(minutes ?? '0'));
-    const filteredPoints = initPoints.filter((point) => {
-      return point.createdAt >= subMinutes(date, 30) && point.createdAt <= addMinutes(date, 30);
-    });
-
-    setPoints(filteredPoints);
-  }, [selectedTime]);
-
   const { data: measurements } = useQuery(supabase.from('measurements_simulation').select());
+
+  const { data: latestMeasurements } = useQuery(supabase.rpc('get_latest_measurements_by_shelf').select());
+
+  const points = useMemo(() => {
+
+    const map = new Map<string, ISensorConfig>();
+    for (const config of SensorConfigs) {
+      const key = `${config.shelfIdx}_${config.floor}_${config.inShelfIdx}`;
+      map.set(key, config);
+    }
+
+    const r: Record<'width' | 'height', number> = {
+      width: 0,
+      height: 0,
+    };
+
+    for (const shelf of ShelfConfigs) {
+      r.width = Math.max(shelf.rect.left + shelf.rect.width);
+      r.height = Math.max(shelf.rect.top + shelf.rect.height);
+    }
+
+    return latestMeasurements?.map((measurement) => {
+      const key = `${measurement.location_shelf_idx}_${measurement.location_floor}_${measurement.location_sensor_idx}`;
+
+      const sensor = map.get(key);
+      
+      return ({
+        x: (sensor?.position.left || 0) / r.width,
+        y: (sensor?.position.top || 0) / r.height,
+        value: measurement.value,
+        value_humidity: measurement.value_humidity,
+        value_temperature: measurement.value_temperature,
+      })
+    });
+  }, [latestMeasurements]);
 
   const measurmentsCtxValue = useMemo(() => {
     const ctx: IMeasurementsContextValue = {
@@ -118,7 +140,10 @@ export default function Home() {
             />
             <div className="absolute inset-0 pointer-events-none pointer-none">
               {heatmapSize.width > 0 && heatmapSize.height > 0 && (
-                <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points} />
+                <HeatmapOverlay 
+                  width={heatmapSize.width}
+                  height={heatmapSize.height} 
+                  points={points || []} />
               )}
             </div>
           </div>
@@ -130,7 +155,6 @@ export default function Home() {
             <div className="glass-card">
               <p>New Stock report</p>
               <p>Lorem Ipsum</p>
-              <div className=" whitespace-pre-wrap">{JSON.stringify(measurements, null, 2)}</div>
             </div>
           </div>
         </div>

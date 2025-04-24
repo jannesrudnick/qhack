@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      alerts: {
+        Row: {
+          affected_product: string | null
+          created_at: string
+          id: number
+          location_sensor_idx: number
+          location_shelf_idx: number
+          status: string
+        }
+        Insert: {
+          affected_product?: string | null
+          created_at?: string
+          id?: number
+          location_sensor_idx: number
+          location_shelf_idx: number
+          status?: string
+        }
+        Update: {
+          affected_product?: string | null
+          created_at?: string
+          id?: number
+          location_sensor_idx?: number
+          location_shelf_idx?: number
+          status?: string
+        }
+        Relationships: []
+      }
       article: {
         Row: {
           allergy_labels: string[] | null
@@ -428,6 +455,20 @@ export type Database = {
         Returns: {
           hour: string
           total_value: number
+        }[]
+      }
+      get_latest_measurements_by_shelf: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string | null
+          id: string
+          location_floor: number
+          location_sensor_idx: number
+          location_shelf_idx: number
+          time: string
+          value: number
+          value_humidity: number | null
+          value_temperature: number | null
         }[]
       }
     }

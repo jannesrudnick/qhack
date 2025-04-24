@@ -93,7 +93,6 @@ const Sensor = (props: SensorProps) => {
     ['id'],
     {
       callback: async (payload) => {
-        console.log('payload', payload);
         await refetch();
 
       },
@@ -199,6 +198,7 @@ export default function FloorMap({ selectedTime }: { selectedTime?: string }) {
           {/* e.g. storage boxes */}
         </div>
       </div>
+      
     </div>
   );
 }
