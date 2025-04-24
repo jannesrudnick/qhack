@@ -106,7 +106,7 @@ const Sensor = (props: SensorProps) => {
       }}
     >
       <HoverCard>
-        <HoverCardTrigger className="cursor-pointer relative z-0">
+        <HoverCardTrigger className="cursor-pointer relative z-0 text-xs font-bold">
           <AnimatedNumber value={sensorData?.value ? Math.round(sensorData.value) : 0} />
         </HoverCardTrigger>
         <HoverCardContent side="right" sideOffset={10}>
