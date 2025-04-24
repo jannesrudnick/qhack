@@ -71,7 +71,9 @@ function SensorOverlay({ sensorConfig, displayId }: { sensorConfig: ISensorConfi
             <div className="border-b my-2"></div>
             <div className="flex justify-between">
               <span className="text-sm">Current Temp:</span>
-              <span>{sensorData?.value_temperature?.toFixed(2)}°C</span>
+              <span className="font-bold text-sm">
+                {sensorData?.value_temperature?.toLocaleString('de-DE', { maximumFractionDigits: 2 })} °C
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm">Current Humidity:</span>

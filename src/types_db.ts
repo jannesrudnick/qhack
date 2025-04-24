@@ -457,6 +457,20 @@ export type Database = {
           total_value: number
         }[]
       }
+      get_latest_measurements_by_shelf: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string | null
+          id: string
+          location_floor: number
+          location_sensor_idx: number
+          location_shelf_idx: number
+          time: string
+          value: number
+          value_humidity: number | null
+          value_temperature: number | null
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
