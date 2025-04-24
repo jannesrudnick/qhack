@@ -83,7 +83,7 @@ const Sensor = (props: SensorProps) => {
     .eq('status', 'open')
     .eq('location_shelf_idx', config.shelfIdx)
     .eq('location_sensor_idx', config.inShelfIdx)
-    .lte('created_at', subMinutes(new Date(), 5).toISOString())
+    .gte('created_at', subMinutes(new Date(), 5).toISOString())
   );
 
   useSubscription(
