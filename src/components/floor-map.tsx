@@ -10,6 +10,7 @@ import { clsx } from 'clsx';
 import React, { ReactNode, useContext, useMemo } from 'react';
 import { AnimatedNumber } from './animated-number';
 import SensorOverlay from './sensor-overlay';
+import { subMinutes } from 'date-fns';
 
 export interface IMeasurementsContextValue {
   timelineMarkers: ITimelineMarker[];
@@ -76,8 +77,16 @@ const Sensor = (props: SensorProps) => {
 
   const supabase = useSupabaseBrowser();
   const { data: sensorData, refetch } = useQuery(getLiveMeasurements(supabase, config, selectedTime));
+  const { data: activeAlerts, refetch: refetchAlerts } = useQuery(supabase
+    .from('alerts')
+    .select('id')
+    .eq('status', 'open')
+    .eq('location_shelf_idx', config.shelfIdx)
+    .eq('location_sensor_idx', config.inShelfIdx)
+    .lte('created_at', subMinutes(new Date(), 5).toISOString())
+  );
 
-  const { status: subscriptionStatus } = useSubscription(
+  useSubscription(
     supabase,
     `live`,
     {
@@ -93,10 +102,27 @@ const Sensor = (props: SensorProps) => {
     },
   );
 
+  useSubscription(
+    supabase,
+    `live:alerts`,
+    {
+      event: '*',
+      table: 'alerts',
+      schema: 'public',
+    },
+    ['id'],
+    {
+      callback: async (payload) => {
+        await refetchAlerts();
+      },
+    },
+  );
+
   return (
     <div
       className={clsx(
         'absolute shadow-xl aspect-square rounded-full text-white px-2 z-0 bg-slate-700 text-sm w-10 text-center flex items-center justify-center',
+        activeAlerts && activeAlerts.length > 0 && 'bg-red-500',
       )}
       data-value={measurement?.value}
       data-location={location}
