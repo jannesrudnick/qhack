@@ -98,6 +98,8 @@ export default function Home() {
       r.height = Math.max(shelf.rect.top + shelf.rect.height);
     }
 
+    console.log('got latestMeasurements', latestMeasurements?.map((m) => m.value_temperature));
+
     return latestMeasurements?.map((measurement) => {
       const key = `${measurement.location_shelf_idx}_${measurement.location_floor}_${measurement.location_sensor_idx}`;
       const sensor = map.get(key);
@@ -180,7 +182,7 @@ export default function Home() {
               <FloorMap selectedTime={selectedTime} />
               <div className="absolute inset-0 pointer-events-none pointer-none">
                 {heatmapSize.width > 0 && heatmapSize.height > 0 && displayMode === 'temperature' && (
-                  <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points || []} />
+                  <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={(points?.map(i => ({ ...i, value: i.value_temperature }))) || []} />
                 )}
                 {heatmapSize.width > 0 && heatmapSize.height > 0 && displayMode === 'incidents' && (
                   <HeatmapOverlay

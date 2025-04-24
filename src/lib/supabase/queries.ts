@@ -15,7 +15,7 @@ export const getLiveMeasurements = (supabase: SupabaseClient, config: ISensorCon
     })
 
   if (selectedTime) {
-    q = q.gte('time', selectedTime);
+    q = q.lte('created_at', selectedTime);
   }
 
   return q

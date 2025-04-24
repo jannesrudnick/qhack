@@ -63,7 +63,7 @@ export default function TimeLineWrapper({
 
       <Timeline
         startTime={setMinutes(sub(new Date(), { hours: 12 }), 0).toISOString()}
-        endTime={setMinutes(add(new Date(), { hours: 12 }), 0).toISOString()}
+        endTime={new Date().toISOString()}
         markers={(alerts ?? []).map((alert) => ({ time: alert.created_at.toString(), value: 'Incident' }))}
         selectedTime={selectedTime}
         onTimeClick={handleTimeClick}
