@@ -150,8 +150,8 @@ export default function Home() {
       <div className="flex flex-col">
         <div className="min-h-screen w-full bg-linear-to-br from-[#C8D5DA] via-[#EBEBD0] to-[#C8D5DA] p-10">
           <div className="flex justify-between">
-            <div className="h-14 bg-white rounded-full px-4 flex items-center justify-center">
-              Unser<b>Logo</b>
+            <div className="h-14 text-xl font-bold bg-white rounded-full px-4 flex items-center justify-center">
+            <span className="text-[#00B050] ">ECO</span>SHELF
             </div>
             <div className="flex gap-4 items-center">
               <IconButton icon={<LucideMap />} />
