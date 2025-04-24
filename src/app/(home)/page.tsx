@@ -105,6 +105,7 @@ export default function Home() {
         value_temperature: !sensor ? 0 : measurement.value_temperature,
         value_humidity: !sensor ? 0 : measurement.value_humidity,
         value: !sensor ? 0 : measurement.value,
+        createdAt: new Date(measurement.created_at),
       };
     });
   }, [latestMeasurements]);
