@@ -1,9 +1,8 @@
 'use client';
-import { CreateStock } from '@/components/create-stock';
 import FloorMap, { IMeasurementsContextValue, MeasurementsContext } from '@/components/floor-map';
 import HeatmapOverlay from '@/components/heatmap-overlay';
 import { ISensorConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
-import SimulateAlert from '@/components/simulate-alert';
+import NavigationPill from '@/components/navigation-pill';
 import TimeLineWrapper from '@/components/timeline-wrapper';
 import { Button } from '@/components/ui/button';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
@@ -49,6 +48,7 @@ const aggregatedIncidents = [
 
 export default function Home() {
   const supabase = useSupabaseBrowser();
+  const [displayMode, setDisplayMode] = useState<'overview' | 'temperature' | 'incidents'>('overview');
 
   const [selectedTime, setSelectedTime] = useState<string>();
 
@@ -141,31 +141,35 @@ export default function Home() {
   return (
     <MeasurementsContext.Provider value={measurmentsCtxValue}>
       <div className="flex flex-col">
-        <div className="min-h-screen w-full bg-linear-to-bl from-violet-200 to-fuchsia-200 p-10">
-          <Header points={points} />
+        <div className="min-h-screen w-full bg-linear-to-bl from-violet-300 to-fuchsia-300 p-10">
+          <Header points={points || []} />
           {selectedTime ? (
             <div>
               Looking at: {selectedTime}
               <Button onClick={() => setSelectedTime(undefined)}>Back to live</Button>
             </div>
           ) : (
-            <div>
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" /> Live
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" />
+              <span className="font-bold text-sm">Live</span>
             </div>
           )}
-          <TimeLineWrapper
-            markers={measurmentsCtxValue.timelineMarkers}
-            setSelectedTime={setSelectedTime}
-            selectedTime={selectedTime}
-          />
+
+          <div className="p-4 mb-6 radius-xl glass-card">
+            <TimeLineWrapper
+              markers={measurmentsCtxValue.timelineMarkers}
+              setSelectedTime={setSelectedTime}
+              selectedTime={selectedTime}
+            />
+          </div>
           <div className="mb-4 dots glass-card relative overflow-hidden">
             <div ref={heatmapRef} className="relative w-full">
               <FloorMap selectedTime={selectedTime} />
               <div className="absolute inset-0 pointer-events-none pointer-none">
-                {heatmapSize.width > 0 && heatmapSize.height > 0 && false && (
+                {heatmapSize.width > 0 && heatmapSize.height > 0 && displayMode === 'temperature' && (
                   <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points || []} />
                 )}
-                {heatmapSize.width > 0 && heatmapSize.height > 0 && aggregatedIncidents && (
+                {heatmapSize.width > 0 && heatmapSize.height > 0 && displayMode === 'incidents' && (
                   <HeatmapOverlay
                     width={heatmapSize.width}
                     height={heatmapSize.height}
@@ -174,23 +178,8 @@ export default function Home() {
                 )}
               </div>
             </div>
-            <div className="border px-6 flex items-center justify-center mb-4 mt-2">
-              <div className="bg-white rounded-full p-1 flex gap-1">
-                <div className="bg-[#E8F15C] text-black rounded-full px-3 py-1.5 cursor-pointer">Overview</div>
-                <div className="bg-white text-gray-500 rounded-full px-3 py-1.5 cursor-pointer">Temperatur</div>
-                <div className="bg-white text-gray-500 rounded-full px-3 py-1.5 cursor-pointer">Incidents</div>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-4 hidden">
-            <div className="glass-card">
-              <CreateStock />
-              <p>Lorem Ipsum</p>
-            </div>
-            <div className="glass-card">
-              <p>New Stock report</p>
-              <p>Lorem Ipsum</p>
-              <SimulateAlert />
+            <div className=" px-6 flex items-center justify-center mb-4 mt-2">
+              <NavigationPill displayMode={displayMode} setDisplayMode={setDisplayMode} />
             </div>
           </div>
         </div>
