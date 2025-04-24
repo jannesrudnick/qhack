@@ -17,7 +17,7 @@ export default function HeatmapOverlay({ width, height, points }: Props) {
     if (!heatmapRef.current) {
       heatmapRef.current = h337.create({
         container: containerRef.current!,
-        radius: 130,
+        radius: 180,
       });
     }
 
