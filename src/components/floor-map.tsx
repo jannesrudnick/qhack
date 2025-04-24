@@ -126,7 +126,7 @@ const Sensor = (props: SensorProps) => {
     <div
       className={clsx(
         'absolute shadow-xl aspect-square rounded-full text-white px-2 z-0 text-sm w-10 text-center flex items-center justify-center',
-        activeAlerts && hasAlert ? 'bg-red-500' : 'bg-slate-700',
+        activeAlerts && hasAlert && !selectedTime ? 'bg-red-500' : 'bg-slate-700',
       )}
       data-value={measurement?.value}
       data-location={location}
@@ -135,7 +135,7 @@ const Sensor = (props: SensorProps) => {
         top: boxCoords(config.position.top) - 2 * 10,
       }}
     >
-      {hasAlert && <div className="absolute inset-0 bg-red-600 animate-ping rounded-full" />}
+      {hasAlert && !selectedTime && <div className="absolute inset-0 bg-red-600 animate-ping rounded-full" />}
       <HoverCard>
         <HoverCardTrigger className="cursor-pointer relative z-0 text-xs font-bold">
           <AnimatedNumber value={sensorData?.value ? Math.round(sensorData.value) : 0} />
