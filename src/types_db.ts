@@ -228,7 +228,7 @@ export type Database = {
       }
       measurements_simulation: {
         Row: {
-          created_at: string | null
+          created_at: string
           id: string
           location_floor: number
           location_sensor_idx: number
@@ -239,7 +239,7 @@ export type Database = {
           value_temperature: number | null
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           location_floor: number
           location_sensor_idx: number
@@ -250,7 +250,7 @@ export type Database = {
           value_temperature?: number | null
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           location_floor?: number
           location_sensor_idx?: number
@@ -446,6 +446,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_active_alerts: {
+        Args:
+          | Record<PropertyKey, never>
+          | { p_shelf_idx: number; p_sensor_idx: number }
+        Returns: {
+          id: number
+          created_at: string
+          location_sensor_idx: number
+          location_shelf_idx: number
+        }[]
+      }
       get_hourly_measurements: {
         Args: {
           _location_sensor_idx: number

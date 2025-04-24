@@ -101,11 +101,6 @@ export default function Home() {
       r.height = Math.max(shelf.rect.top + shelf.rect.height);
     }
 
-    console.log(
-      'got latestMeasurements',
-      latestMeasurements?.map((m) => m.value_temperature),
-    );
-
     return latestMeasurements?.map((measurement) => {
       const key = `${measurement.location_shelf_idx}_${measurement.location_floor}_${measurement.location_sensor_idx}`;
       const sensor = map.get(key);
