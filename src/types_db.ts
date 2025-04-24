@@ -458,7 +458,7 @@ export type Database = {
         }[]
       }
       get_latest_measurements: {
-        Args: Record<PropertyKey, never>
+        Args: Record<PropertyKey, never> | { before_time: string }
         Returns: {
           location_floor: number
           location_sensor_idx: number
@@ -468,10 +468,6 @@ export type Database = {
           value_humidity: number
           value_temperature: number
         }[]
-      }
-      get_latest_measurements_by_shelf: {
-        Args: Record<PropertyKey, never>
-        Returns: Record<string, unknown>[]
       }
     }
     Enums: {
