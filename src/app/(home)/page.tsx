@@ -12,6 +12,7 @@ import { EllipsisVertical, LucideMap, MapPin, User2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Header from './header';
 import TopSpoiledFoods from './top-spoiled-foods';
+import { AlertList } from './alert-list';
 
 export type Point = {
   x: number;
@@ -230,9 +231,12 @@ export default function Home() {
               </div>
             </div>
           </div>
+          
           <div className="grid grid-cols-2 gap-4 mt-8">
             <TopSpoiledFoods />
+            <AlertList />
           </div>
+
         </div>
       </div>
     </MeasurementsContext.Provider>
