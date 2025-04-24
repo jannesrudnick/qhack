@@ -79,7 +79,9 @@ const Sensor = (props: SensorProps) => {
   const { data: sensorData, refetch } = useQuery(getLiveMeasurements(supabase, config, selectedTime));
   const { data: activeAlerts, refetch: refetchAlerts } = useQuery(supabase
     .rpc('get_active_alerts').select('id, location_shelf_idx, location_sensor_idx, created_at')
-  );
+  , {
+    refetchInterval: 1000 * 60,
+  });
 
   useSubscription(
     supabase,
