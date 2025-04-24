@@ -48,7 +48,7 @@ const ShelfBox = (props: ShelfBoxProps) => {
         height: boxCoords(0.8),
       }}
     >
-      <div className="bg-white rounded-lg flex items-center justify-center aspect-square p-1 border border-gray-300">
+      <div className="bg-white rounded-lg flex items-center justify-center aspect-square p-1 border border-gray-300 text-gray-400 text-sm">
         {left}·{top}
       </div>
     </div>
@@ -194,7 +194,6 @@ export default function FloorMap({ selectedTime }: { selectedTime?: string }) {
           {/* e.g. storage boxes */}
         </div>
       </div>
-      
     </div>
   );
 }

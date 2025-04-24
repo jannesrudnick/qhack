@@ -4,7 +4,7 @@ import HeatmapOverlay from '@/components/heatmap-overlay';
 import { ISensorConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
 import NavigationPill from '@/components/navigation-pill';
 import TimeLineWrapper from '@/components/timeline-wrapper';
-import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -18,7 +18,6 @@ export type Point = {
   value: number;
   createdAt: Date;
 };
-
 
 const aggregatedIncidents = [
   { x: 0, y: 0, value: 0 },
@@ -45,10 +44,10 @@ const aggregatedIncidents = [
   { x: 0.94, y: 0.61, value: 2 },
 ];
 
-
 export default function Home() {
   const supabase = useSupabaseBrowser();
   const [displayMode, setDisplayMode] = useState<'overview' | 'temperature' | 'incidents'>('overview');
+  const [liveMode, setLiveMode] = useState(false);
 
   const [selectedTime, setSelectedTime] = useState<string>();
 
@@ -56,13 +55,17 @@ export default function Home() {
   const [heatmapSize, setHeatmapSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
+    if (liveMode) {
+      setSelectedTime(undefined);
+    }
+  }, [liveMode]);
+
+  useEffect(() => {
     if (heatmapRef.current) {
       const { offsetWidth, offsetHeight } = heatmapRef.current;
       setHeatmapSize({ width: offsetWidth, height: offsetHeight });
     }
   }, []);
-
-  console.log('selectedTime', selectedTime);
 
   const { data: measurements } = useQuery(supabase.from('measurements_simulation').select());
   const { data: latestMeasurements, isLoading } = useQuery(
@@ -144,25 +147,34 @@ export default function Home() {
       <div className="flex flex-col">
         <div className="min-h-screen w-full bg-linear-to-bl from-violet-300 to-fuchsia-300 p-10">
           <Header points={points || []} />
-          {selectedTime ? (
-            <div>
-              Looking at: {selectedTime}
-              <Button onClick={() => setSelectedTime(undefined)}>Back to live</Button>
-            </div>
+          {displayMode !== 'incidents' ? (
+            <>
+              <div className="flex items-center gap-4 my-4">
+                <Switch checked={liveMode} onCheckedChange={(v) => setLiveMode(v)} />
+                <span className="text-sm font-bold">live-mode</span>
+                {liveMode ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" />
+                  </div>
+                ) : null}
+              </div>
+              {!liveMode && (
+                <div className="p-4 mb-6 radius-xl glass-card">
+                  <TimeLineWrapper
+                    markers={measurmentsCtxValue.timelineMarkers}
+                    setSelectedTime={setSelectedTime}
+                    selectedTime={selectedTime}
+                  />
+                </div>
+              )}
+            </>
           ) : (
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" />
-              <span className="font-bold text-sm">Live</span>
+            <div className="flex items-center justify-center mt-12">
+              <div className="mx-auto bg-slate-900 text-white my-4 rounded-full px-3 py-1 text-sm">
+                Viewing the Aggregated Incidents from the last 30 days
+              </div>
             </div>
           )}
-
-          <div className="p-4 mb-6 radius-xl glass-card">
-            <TimeLineWrapper
-              markers={measurmentsCtxValue.timelineMarkers}
-              setSelectedTime={setSelectedTime}
-              selectedTime={selectedTime}
-            />
-          </div>
           <div className="mb-4 dots glass-card relative overflow-hidden">
             <div ref={heatmapRef} className="relative w-full">
               <FloorMap selectedTime={selectedTime} />

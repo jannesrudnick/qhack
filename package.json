@@ -19,6 +19,7 @@
     "@radix-ui/react-radio-group": "~1.2.4",
     "@radix-ui/react-select": "~2.1.7",
     "@radix-ui/react-slot": "~1.2.0",
+    "@radix-ui/react-switch": "^1.2.2",
     "@supabase-cache-helpers/postgrest-react-query": "~1.12.1",
     "@supabase/ssr": "~0.6.1",
     "@supabase/supabase-js": "~2.49.4",
