@@ -1,8 +1,9 @@
 'use client';
 
 import { Timeline } from '@/components/timeline';
-import { Dispatch, useMemo, useState } from 'react';
-import { add, format, setHours, setMinutes, sub } from 'date-fns';
+import { useSupabaseBrowser } from '@/lib/supabase/client';
+import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
+import { add, setMinutes, sub } from 'date-fns';
 
 const INTERVAL_5_MIN = 5 * 60 * 1000;
 export function roundDate5Min(date: string): string {
@@ -14,11 +15,20 @@ export interface ITimelineMarker {
   value: string;
 }
 
-export default function TimeLineWrapper({ selectedTime, setSelectedTime, markers }: { markers: ITimelineMarker[]; setSelectedTime: (v?: string) => void, selectedTime?: string }) {
+export default function TimeLineWrapper({
+  selectedTime,
+  setSelectedTime,
+  markers,
+}: {
+  markers: ITimelineMarker[];
+  setSelectedTime: (v?: string) => void;
+  selectedTime?: string;
+}) {
+  const supabase = useSupabaseBrowser();
+  const { data: alerts } = useQuery(supabase.from('alerts').select());
+
   const handleTimeClick = (time: string) => {
     setSelectedTime(roundDate5Min(time));
-    console.log(`Springe zu Zeitpunkt: ${time}`);
-    // Hier können Sie weitere Aktionen ausführen, z.B. Daten für diesen Zeitpunkt laden
   };
 
   return (
@@ -54,7 +64,7 @@ export default function TimeLineWrapper({ selectedTime, setSelectedTime, markers
       <Timeline
         startTime={setMinutes(sub(new Date(), { hours: 12 }), 0).toISOString()}
         endTime={setMinutes(add(new Date(), { hours: 12 }), 0).toISOString()}
-        markers={markers}
+        markers={(alerts ?? []).map((alert) => ({ time: alert.created_at.toString(), value: 'Incident' }))}
         selectedTime={selectedTime}
         onTimeClick={handleTimeClick}
       />

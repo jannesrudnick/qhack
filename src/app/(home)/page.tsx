@@ -2,13 +2,14 @@
 import { CreateStock } from '@/components/create-stock';
 import FloorMap, { IMeasurementsContextValue, MeasurementsContext } from '@/components/floor-map';
 import HeatmapOverlay from '@/components/heatmap-overlay';
-import TimeLineWrapper, { roundDate5Min } from '@/components/timeline-wrapper';
+import SimulateAlert from '@/components/simulate-alert';
+import TimeLineWrapper from '@/components/timeline-wrapper';
+import { Button } from '@/components/ui/button';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { addMinutes, subMinutes } from 'date-fns';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Header from './header';
-import { Button } from '@/components/ui/button';
 
 type Point = {
   x: number;
@@ -101,11 +102,14 @@ export default function Home() {
         <div className="min-h-screen w-full bg-linear-to-bl from-violet-200 to-fuchsia-200 p-10">
           <Header />
           {selectedTime ? (
-            <div>Looking at: {selectedTime}
+            <div>
+              Looking at: {selectedTime}
               <Button onClick={() => setSelectedTime(undefined)}>Back to live</Button>
             </div>
           ) : (
-            <div><div className='w-2 h-2 bg-green-400 rounded-full animate-ping' /> Live</div>
+            <div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" /> Live
+            </div>
           )}
           <TimeLineWrapper
             markers={measurmentsCtxValue.timelineMarkers}
@@ -113,16 +117,14 @@ export default function Home() {
             selectedTime={selectedTime}
           />
           <div ref={heatmapRef} className="mb-4 dots glass-card relative overflow-hidden">
-            <FloorMap 
-              selectedTime={selectedTime}
-            />
+            <FloorMap selectedTime={selectedTime} />
             <div className="absolute inset-0 pointer-events-none pointer-none">
               {heatmapSize.width > 0 && heatmapSize.height > 0 && (
                 <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points} />
               )}
             </div>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 hidden">
             <div className="glass-card">
               <CreateStock />
               <p>Lorem Ipsum</p>
@@ -130,7 +132,7 @@ export default function Home() {
             <div className="glass-card">
               <p>New Stock report</p>
               <p>Lorem Ipsum</p>
-              <div className=" whitespace-pre-wrap">{JSON.stringify(measurements, null, 2)}</div>
+              <SimulateAlert />
             </div>
           </div>
         </div>

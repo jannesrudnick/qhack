@@ -1,16 +1,15 @@
 'use client';
 import { ISensorConfig, IShelfConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
 import { ITimelineMarker } from '@/components/timeline-wrapper';
-import { Tables } from '@/types_db';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@radix-ui/react-hover-card';
-import { clsx } from 'clsx';
-import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import SensorOverlay from './sensor-overlay';
-import { useQuery, useSubscription } from '@supabase-cache-helpers/postgrest-react-query';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { getLiveMeasurements } from '@/lib/supabase/queries';
-import { toast } from 'sonner';
+import { Tables } from '@/types_db';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@radix-ui/react-hover-card';
+import { useQuery, useSubscription } from '@supabase-cache-helpers/postgrest-react-query';
+import { clsx } from 'clsx';
+import React, { ReactNode, useContext, useMemo } from 'react';
 import { AnimatedNumber } from './animated-number';
+import SensorOverlay from './sensor-overlay';
 
 export interface IMeasurementsContextValue {
   timelineMarkers: ITimelineMarker[];
@@ -74,13 +73,9 @@ const Sensor = (props: SensorProps) => {
   const ctx = useContext(MeasurementsContext);
 
   const measurement = ctx?.relevantBySensor.get(location);
-  const hit = (measurement?.value ?? 0) > 0;
 
   const supabase = useSupabaseBrowser();
-  const { data: sensorData, refetch } = useQuery(
-    getLiveMeasurements(supabase, config, selectedTime)
-  );
-
+  const { data: sensorData, refetch } = useQuery(getLiveMeasurements(supabase, config, selectedTime));
 
   const { status: subscriptionStatus } = useSubscription(
     supabase,
@@ -95,7 +90,6 @@ const Sensor = (props: SensorProps) => {
       callback: async (payload) => {
         console.log('payload', payload);
         await refetch();
-
       },
     },
   );
@@ -103,8 +97,7 @@ const Sensor = (props: SensorProps) => {
   return (
     <div
       className={clsx(
-        'absolute aspect-square border-2  rounded-full text-white p-1 z-0',
-        hit ? 'bg-red-600' : 'bg-slate-600',
+        'absolute shadow-xl aspect-square rounded-full text-white px-2 z-0 bg-slate-700 text-sm w-10 text-center flex items-center justify-center',
       )}
       data-value={measurement?.value}
       data-location={location}
@@ -118,7 +111,10 @@ const Sensor = (props: SensorProps) => {
           <AnimatedNumber value={sensorData?.value ? Math.round(sensorData.value) : 0} />
         </HoverCardTrigger>
         <HoverCardContent side="right" sideOffset={10}>
-          <SensorOverlay sensorConfig={props.config} displayId={`${props.config.shelfIdx}-${props.config.floor}-${props.config.inShelfIdx}`} />
+          <SensorOverlay
+            sensorConfig={props.config}
+            displayId={`${props.config.shelfIdx}-${props.config.floor}-${props.config.inShelfIdx}`}
+          />
         </HoverCardContent>
       </HoverCard>
     </div>

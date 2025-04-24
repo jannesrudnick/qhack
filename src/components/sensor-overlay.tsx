@@ -1,28 +1,36 @@
+import { useSupabaseBrowser } from '@/lib/supabase/client';
+import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
+import { ISensorConfig } from './locations';
 import { Card, CardContent } from './ui/card';
 import { ChartContainer } from './ui/chart';
-import { ISensorConfig } from './locations';
-import { useSupabaseBrowser } from '@/lib/supabase/client';
-import { useQuery, useSubscription } from '@supabase-cache-helpers/postgrest-react-query';
 
-function SensorOverlay({ sensorConfig, displayId }: { sensorConfig: ISensorConfig, displayId: string }) {
+function SensorOverlay({ sensorConfig, displayId }: { sensorConfig: ISensorConfig; displayId: string }) {
   const supabase = useSupabaseBrowser();
-  const { data: sensorData } = useQuery(supabase
-    .from('measurements_simulation')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .match({ 
-      location_shelf_idx: sensorConfig.shelfIdx,
-      location_floor: sensorConfig.floor,
-      location_sensor_idx: sensorConfig.inShelfIdx,
-    }).single().throwOnError());
+  const { data: sensorData } = useQuery(
+    supabase
+      .from('measurements_simulation')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .match({
+        location_shelf_idx: sensorConfig.shelfIdx,
+        location_floor: sensorConfig.floor,
+        location_sensor_idx: sensorConfig.inShelfIdx,
+      })
+      .single()
+      .throwOnError(),
+  );
 
-  const { data: hourlyData } = useQuery(supabase.rpc('get_hourly_measurements', {
-    _location_sensor_idx: sensorConfig.inShelfIdx,
-    _location_shelf_idx: sensorConfig.shelfIdx,
-    _location_floor: sensorConfig.floor,
-  }).throwOnError());
+  const { data: hourlyData } = useQuery(
+    supabase
+      .rpc('get_hourly_measurements', {
+        _location_sensor_idx: sensorConfig.inShelfIdx,
+        _location_shelf_idx: sensorConfig.shelfIdx,
+        _location_floor: sensorConfig.floor,
+      })
+      .throwOnError(),
+  );
 
   const chartData = hourlyData?.map((data) => ({
     month: new Date(data.hour).getHours(),
@@ -63,7 +71,7 @@ function SensorOverlay({ sensorConfig, displayId }: { sensorConfig: ISensorConfi
             <div className="border-b my-2"></div>
             <div className="flex justify-between">
               <span className="text-sm">Current Temp:</span>
-              <span className="font-bold text-sm">{sensorData?.value_temperature} °C</span>
+              <span>{sensorData?.value_temperature?.toFixed(2)}°C</span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm">Current Humidity:</span>
@@ -75,7 +83,6 @@ function SensorOverlay({ sensorConfig, displayId }: { sensorConfig: ISensorConfi
             <p className="text-sm">No data</p>
           </div>
         )}
-
       </CardContent>
     </Card>
   );
