@@ -8,9 +8,10 @@ import TimeLineWrapper from '@/components/timeline-wrapper';
 import { Switch } from '@/components/ui/switch';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
-import { EllipsisVertical, LucideMap, User2 } from 'lucide-react';
+import { EllipsisVertical, LucideMap, MapPin, User2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Header from './header';
+import TopSpoiledFoods from './top-spoiled-foods';
 
 export type Point = {
   x: number;
@@ -159,10 +160,13 @@ export default function Home() {
             </div>
           </div>
           <div className="flex justify-between">
-            <div className="flex items-center my-6">
+            <div className="flex items-center my-6 mb-8">
               <div className="flex flex-col">
-                <p className="text-gray-500">Comprehensive Insights</p>
-                <p className="font-bold">Executive Overview</p>
+                <div className="flex items-center gap-1 text-gray-500">
+                  <MapPin size={15} />
+                  <p className="">Warehouse Utrecht</p>
+                </div>
+                <p className="font-bold text-xl">Warehouse Climate & Mold Overview</p>
               </div>
               <div className="ml-auto"></div>
             </div>
@@ -202,7 +206,11 @@ export default function Home() {
               <FloorMap selectedTime={selectedTime} />
               <div className="absolute inset-0 pointer-events-none pointer-none">
                 {heatmapSize.width > 0 && heatmapSize.height > 0 && displayMode === 'temperature' && (
-                  <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={(points?.map(i => ({ ...i, value: i.value_temperature }))) || []} />
+                  <HeatmapOverlay
+                    width={heatmapSize.width}
+                    height={heatmapSize.height}
+                    points={points?.map((i) => ({ ...i, value: i.value_temperature })) || []}
+                  />
                 )}
                 {heatmapSize.width > 0 && heatmapSize.height > 0 && displayMode === 'incidents' && (
                   <HeatmapOverlay
@@ -214,8 +222,16 @@ export default function Home() {
               </div>
             </div>
             <div className=" px-6 flex items-center justify-center mb-4 mt-2">
+              <div className="flex-[1]" />
               <NavigationPill displayMode={displayMode} setDisplayMode={setDisplayMode} />
+              <div className="flex items-center justify-end gap-1 flex-[1]">
+                <div className="size-2 rounded-full bg-slate-700"></div>
+                <div className="text-sm text-gray-700">Values show the TVOC in ppm</div>
+              </div>
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 mt-8">
+            <TopSpoiledFoods />
           </div>
         </div>
       </div>
