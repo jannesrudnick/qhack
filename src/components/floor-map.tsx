@@ -1,7 +1,7 @@
 'use client';
 
-import { ISensorConfig, IShelfConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
 import { ITimelineMarker } from '@/components/timeline-wrapper';
+import { ISensorConfig, IShelfConfig, SensorConfigs, ShelfConfigs } from '@/lib/locations';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { getLiveMeasurements } from '@/lib/supabase/queries';
 import { Tables } from '@/types_db';

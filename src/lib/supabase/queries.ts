@@ -1,4 +1,4 @@
-import { ISensorConfig } from "@/components/locations";
+import { ISensorConfig } from "@/lib/locations";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 

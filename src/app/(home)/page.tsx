@@ -2,10 +2,11 @@
 import { FloorMap, IMeasurementsContextValue, MeasurementsContext } from '@/components/floor-map';
 import { HeatmapOverlay } from '@/components/heatmap-overlay';
 import { IconButton } from '@/components/icon-button';
-import { ISensorConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
 import { NavigationPill } from '@/components/navigation-pill';
 import { TimeLineWrapper } from '@/components/timeline-wrapper';
 import { Switch } from '@/components/ui/switch';
+import { aggregatedIncidents } from '@/lib/incidents';
+import { ISensorConfig, SensorConfigs, ShelfConfigs } from '@/lib/locations';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { EllipsisVertical, LucideMap, MapPin, User2 } from 'lucide-react';
@@ -22,31 +23,6 @@ export type Point = {
   value: number;
   createdAt: Date;
 };
-
-const aggregatedIncidents = [
-  { x: 0, y: 0, value: 0 },
-  { x: 0.1, y: 0.3, value: 4 },
-  { x: 0.2, y: 0.31, value: 1 },
-  { x: 0.3, y: 0.41, value: 2 },
-  { x: 0.2, y: 0.21, value: 1 },
-  { x: 0.2, y: 0.41, value: 1 },
-  { x: 0.1, y: 0.41, value: 2 },
-  { x: 0.1, y: 0.21, value: 1 },
-  { x: 0.1, y: 0.31, value: 2 },
-  { x: 0.1, y: 0.41, value: 1 },
-  { x: 0.45, y: 0.51, value: 1 },
-  { x: 0.45, y: 0.21, value: 2 },
-  { x: 0.45, y: 0.41, value: 1 },
-  { x: 0.45, y: 0.11, value: 1 },
-  { x: 0.75, y: 0.21, value: 5 },
-  { x: 0.65, y: 0.21, value: 3 },
-  { x: 0.65, y: 0.31, value: 3 },
-  { x: 0.65, y: 0.41, value: 2 },
-  { x: 0.65, y: 0.51, value: 2 },
-  { x: 0.92, y: 0.21, value: 2 },
-  { x: 0.92, y: 0.41, value: 3 },
-  { x: 0.94, y: 0.61, value: 2 },
-];
 
 export default function Home() {
   const supabase = useSupabaseBrowser();

@@ -1,7 +1,7 @@
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
-import { ISensorConfig } from './locations';
+import { ISensorConfig } from '../lib/locations';
 import { Card, CardContent } from './ui/card';
 import { ChartContainer } from './ui/chart';
 
@@ -88,4 +88,4 @@ export const SensorOverlay = ({ sensorConfig, displayId }: { sensorConfig: ISens
       </CardContent>
     </Card>
   );
-}
+};
