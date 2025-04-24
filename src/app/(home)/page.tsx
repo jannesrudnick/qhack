@@ -53,7 +53,7 @@ export default function Home() {
 
   const { data: measurements } = useQuery(supabase.from('measurements_simulation').select());
 
-  const { data: latestMeasurements } = useQuery(supabase.rpc('get_latest_measurements_by_shelf').select());
+  const { data: latestMeasurements } = useQuery(supabase.rpc('get_latest_measurements').select());
 
   const points = useMemo(() => {
     const map = new Map<string, ISensorConfig>();
@@ -74,18 +74,17 @@ export default function Home() {
 
     return latestMeasurements?.map((measurement) => {
       const key = `${measurement.location_shelf_idx}_${measurement.location_floor}_${measurement.location_sensor_idx}`;
-
       const sensor = map.get(key);
 
       return {
         x: (sensor?.position.left || 0) / r.width,
         y: (sensor?.position.top || 0) / r.height,
-        value: measurement.value,
-        value_humidity: measurement.value_humidity,
-        value_temperature: measurement.value_temperature,
+        value: !sensor ? 0 : measurement.value_temperature,
       };
     });
   }, [latestMeasurements]);
+
+  console.log('points',points);
 
   const measurmentsCtxValue = useMemo(() => {
     const ctx: IMeasurementsContextValue = {
