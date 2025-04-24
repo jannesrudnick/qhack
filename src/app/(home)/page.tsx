@@ -11,30 +11,14 @@ import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Header from './header';
 
-type Point = {
+export type Point = {
   x: number;
   y: number;
+  value_temperature: number;
+  value_humidity: number;
   value: number;
   createdAt: Date;
 };
-
-const initPoints: Point[] = [
-  { x: 0, y: 0, value: 18, createdAt: new Date() },
-  { x: 1, y: 0, value: 22, createdAt: new Date(Date.now() - 600000) }, // 10 mins ago
-  { x: 1, y: 1, value: 13, createdAt: new Date(Date.now() - 1200000) }, // 20 mins ago
-  { x: 0.1, y: 0.21, value: 25, createdAt: new Date(Date.now() - 1800000) }, // 30 mins ago
-  { x: 0.1, y: 0.31, value: 16, createdAt: new Date(Date.now() - 2400000) }, // 40 mins ago
-  { x: 0.1, y: 0.41, value: 19, createdAt: new Date(Date.now() - 3000000) }, // 50 mins ago
-  { x: 0.1, y: 0.51, value: 21, createdAt: new Date(Date.now() - 3600000) }, // 1 hour ago
-  { x: 0.2, y: 0.21, value: 14, createdAt: new Date() },
-  { x: 0.2, y: 0.31, value: 17, createdAt: new Date(Date.now() - 900000) }, // 15 mins ago
-  { x: 0.2, y: 0.41, value: 23, createdAt: new Date(Date.now() - 1500000) }, // 25 mins ago
-  { x: 0.1, y: 0.11, value: 11, createdAt: new Date(Date.now() - 2100000) }, // 35 mins ago
-  { x: 0.23, y: 0.21, value: 24, createdAt: new Date(Date.now() - 2700000) }, // 45 mins ago
-  { x: 0.82, y: 0.41, value: 20, createdAt: new Date(Date.now() - 3300000) }, // 55 mins ago
-  { x: 0.26, y: 0.21, value: 15, createdAt: new Date() },
-  { x: 0.16, y: 0.31, value: 10, createdAt: new Date(Date.now() - 1800000) }, // 30 mins ago
-];
 
 export default function Home() {
   const supabase = useSupabaseBrowser();
@@ -82,7 +66,9 @@ export default function Home() {
       return {
         x: (sensor?.position.left || 0) / r.width,
         y: (sensor?.position.top || 0) / r.height,
-        value: !sensor ? 0 : measurement.value_temperature,
+        value_temperature: !sensor ? 0 : measurement.value_temperature,
+        value_humidity: !sensor ? 0 : measurement.value_humidity,
+        value: !sensor ? 0 : measurement.value,
       };
     });
   }, [latestMeasurements]);
@@ -120,7 +106,7 @@ export default function Home() {
     <MeasurementsContext.Provider value={measurmentsCtxValue}>
       <div className="flex flex-col">
         <div className="min-h-screen w-full bg-linear-to-bl from-violet-200 to-fuchsia-200 p-10">
-          <Header />
+          <Header points={points} />
           {selectedTime ? (
             <div>
               Looking at: {selectedTime}
