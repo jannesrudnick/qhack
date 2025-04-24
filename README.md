@@ -1,36 +1,21 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Used Technologies
 
-First, run the development server:
+- Tanstack for caching database query results
+- PostgreSQL (with Supabase)
+- Tailwindcss for styling
+- Supabase functions wie Cronjobs to simulate sensor data and do linear regression to trigger alerts (functions are deployed on server)
+- ESP32, industry-standard IoT micro-controller that can connect to the internet
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Hardware - Part
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- We use an ESP32 which reads the value of an SGP30 sensor (Humidity, TVOC) and an temperature sensor
+- the values are directly inserted into a `measurements` table in our database with a POST request
+- found in the `hardware` directory
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Software - Part
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- With a database trigger, after each insert of an sensor value we run a function that does linear progression over the last 12 measurement values
+- For demonstrating and testing purposes we also added a simulation function which will randomly alter measurement values, since we just had one sensor to test during our 24 hours
+- In our nextjs app we render the floor and visualize the datapoints in realtime / with a heatmap and display further information that we can provide with our data
