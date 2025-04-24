@@ -145,7 +145,7 @@ export default function Home() {
   return (
     <MeasurementsContext.Provider value={measurmentsCtxValue}>
       <div className="flex flex-col">
-        <div className="min-h-screen w-full bg-linear-to-bl from-violet-300 to-fuchsia-300 p-10">
+        <div className="min-h-screen w-full bg-linear-to-br from-[#C8D5DA] via-[#EBEBD0] to-[#C8D5DA] p-10">
           <Header points={points || []} />
           {displayMode !== 'incidents' ? (
             <>
