@@ -51,9 +51,12 @@ export default function Home() {
     }
   }, []);
 
-  const { data: measurements } = useQuery(supabase.from('measurements_simulation').select());
+  console.log('selectedTime',selectedTime);
 
-  const { data: latestMeasurements } = useQuery(supabase.rpc('get_latest_measurements').select());
+  const { data: measurements } = useQuery(supabase.from('measurements_simulation').select());
+  const { data: latestMeasurements, isLoading } = useQuery(supabase.rpc('get_latest_measurements', selectedTime ? {
+    before_time: selectedTime!,
+  } : undefined).select());
 
   const points = useMemo(() => {
     const map = new Map<string, ISensorConfig>();
@@ -83,8 +86,6 @@ export default function Home() {
       };
     });
   }, [latestMeasurements]);
-
-  console.log('points',points);
 
   const measurmentsCtxValue = useMemo(() => {
     const ctx: IMeasurementsContextValue = {
