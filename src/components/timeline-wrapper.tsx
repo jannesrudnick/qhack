@@ -33,7 +33,7 @@ export default function TimeLineWrapper({
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center">
         {/*
 
         <div className="flex gap-4">
