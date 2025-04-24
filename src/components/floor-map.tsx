@@ -7,7 +7,7 @@ import { Tables } from '@/types_db';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@radix-ui/react-hover-card';
 import { useQuery, useSubscription } from '@supabase-cache-helpers/postgrest-react-query';
 import { clsx } from 'clsx';
-import React, { ReactNode, useContext, useMemo } from 'react';
+import React, { ReactNode, useContext, useMemo, useState } from 'react';
 import { AnimatedNumber } from './animated-number';
 import SensorOverlay from './sensor-overlay';
 import { subMinutes } from 'date-fns';
@@ -78,12 +78,7 @@ const Sensor = (props: SensorProps) => {
   const supabase = useSupabaseBrowser();
   const { data: sensorData, refetch } = useQuery(getLiveMeasurements(supabase, config, selectedTime));
   const { data: activeAlerts, refetch: refetchAlerts } = useQuery(supabase
-    .from('alerts')
-    .select('id')
-    .eq('status', 'open')
-    .eq('location_shelf_idx', config.shelfIdx)
-    .eq('location_sensor_idx', config.inShelfIdx)
-    .gte('created_at', subMinutes(new Date(), 5).toISOString())
+    .rpc('get_active_alerts').select('id, location_shelf_idx, location_sensor_idx, created_at')
   );
 
   useSubscription(
@@ -121,8 +116,8 @@ const Sensor = (props: SensorProps) => {
   return (
     <div
       className={clsx(
-        'absolute shadow-xl aspect-square rounded-full text-white px-2 z-0 bg-slate-700 text-sm w-10 text-center flex items-center justify-center',
-        activeAlerts && activeAlerts.length > 0 && 'bg-red-500',
+        'absolute shadow-xl aspect-square rounded-full text-white px-2 z-0 text-sm w-10 text-center flex items-center justify-center',
+        activeAlerts && activeAlerts.filter(i => i.location_sensor_idx === config.inShelfIdx && i.location_shelf_idx === config.shelfIdx).length > 0 ? 'bg-red-500' : 'bg-slate-700',
       )}
       data-value={measurement?.value}
       data-location={location}
