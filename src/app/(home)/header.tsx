@@ -13,9 +13,9 @@ function Header({ points }: { points: Point[] }) {
                 maximumFractionDigits: 2,
                 minimumFractionDigits: 2,
               },
-            )}
+            )}{' '}
           </h2>
-          <p className="text-gray-500">Durchschnittlicher VOC</p>
+          <p className="text-gray-500">avg. TVOC</p>
           <div className="flex items-center gap-2 mt-4">
             {points && points.length > 0 && (
               <>
@@ -42,7 +42,7 @@ function Header({ points }: { points: Point[] }) {
                         })}
                         %
                       </span>
-                      <span className="text-xs text-gray-500">vs. 12h ago</span>
+                      <span className="text-xs text-gray-500">in the last 12h</span>
                     </>
                   );
                 })()}
@@ -57,9 +57,10 @@ function Header({ points }: { points: Point[] }) {
             ).toLocaleString(undefined, {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
-            })}
+            })}{' '}
+            °C
           </h2>
-          <p className="text-gray-500">Durchschnittliche Temperatur</p>
+          <p className="text-gray-500">avg. temperature</p>
           <div className="flex items-center gap-2 mt-4">
             {points && points.length > 0 && (
               <>
@@ -88,7 +89,7 @@ function Header({ points }: { points: Point[] }) {
                         })}
                         %
                       </span>
-                      <span className="text-xs text-gray-500">vs. 12h ago</span>
+                      <span className="text-xs text-gray-500">in the last 12h</span>
                     </>
                   );
                 })()}
@@ -103,9 +104,10 @@ function Header({ points }: { points: Point[] }) {
             ).toLocaleString(undefined, {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
-            })}
+            })}{' '}
+            %
           </h2>
-          <p className="text-gray-500">Durchschnittliche Luftfeuchtigkeit</p>
+          <p className="text-gray-500">avg. humidity</p>
           <div className="flex items-center gap-2 mt-4">
             {points && points.length > 0 && (
               <>
@@ -134,7 +136,7 @@ function Header({ points }: { points: Point[] }) {
                         })}
                         %
                       </span>
-                      <span className="text-xs text-gray-500">vs. 12h ago</span>
+                      <span className="text-xs text-gray-500">in the last 12h</span>
                     </>
                   );
                 })()}

@@ -185,7 +185,7 @@ export default function Home() {
                 <span className="text-sm font-bold">live-mode</span>
                 {liveMode ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" />
+                    <div className="w-2 h-2 bg-green-700 rounded-full animate-ping" />
                   </div>
                 ) : null}
               </div>
