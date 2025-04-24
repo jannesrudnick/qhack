@@ -15,7 +15,7 @@ export interface ITimelineMarker {
   value: string;
 }
 
-export default function TimeLineWrapper({
+export const TimeLineWrapper =({
   selectedTime,
   setSelectedTime,
   markers,
@@ -23,7 +23,7 @@ export default function TimeLineWrapper({
   markers: ITimelineMarker[];
   setSelectedTime: (v?: string) => void;
   selectedTime?: string;
-}) {
+}) => {
   const supabase = useSupabaseBrowser();
   const { data: alerts } = useQuery(supabase.from('alerts').select());
 

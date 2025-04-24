@@ -1,4 +1,5 @@
 'use client';
+
 import { ISensorConfig, IShelfConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
 import { ITimelineMarker } from '@/components/timeline-wrapper';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
@@ -9,8 +10,7 @@ import { useQuery, useSubscription } from '@supabase-cache-helpers/postgrest-rea
 import { clsx } from 'clsx';
 import React, { ReactNode, useContext, useMemo, useState } from 'react';
 import { AnimatedNumber } from './animated-number';
-import SensorOverlay from './sensor-overlay';
-import { subMinutes } from 'date-fns';
+import { SensorOverlay } from './sensor-overlay';
 
 export interface IMeasurementsContextValue {
   timelineMarkers: ITimelineMarker[];
@@ -78,11 +78,13 @@ const Sensor = (props: SensorProps) => {
   const supabase = useSupabaseBrowser();
   const { data: sensorData, refetch } = useQuery(getLiveMeasurements(supabase, config, selectedTime));
   const { data: activeAlerts, refetch: refetchAlerts } = useQuery(supabase
-    .rpc('get_active_alerts').select('id, location_shelf_idx, location_sensor_idx, created_at')
+    .rpc('get_active_alerts')
+    .select('id, location_shelf_idx, location_sensor_idx, created_at')
   , {
     refetchInterval: 1000 * 60,
   });
 
+  // listen to database changes of the measurement table and alerts to update the displayed data
   useSubscription(
     supabase,
     `live`,
@@ -93,7 +95,7 @@ const Sensor = (props: SensorProps) => {
     },
     ['id'],
     {
-      callback: async (payload) => {
+      callback: async () => {
         await refetch();
       },
     },
@@ -109,7 +111,7 @@ const Sensor = (props: SensorProps) => {
     },
     ['id'],
     {
-      callback: async (payload) => {
+      callback: async () => {
         await refetchAlerts();
       },
     },
@@ -169,7 +171,7 @@ const Shelf = (props: ShelfProps) => {
   );
 };
 
-export default function FloorMap({ selectedTime }: { selectedTime?: string }) {
+export const FloorMap = ({ selectedTime }: { selectedTime?: string }) => {
   const sizes = useMemo(() => {
     const r: Record<'width' | 'height', number> = {
       width: 0,

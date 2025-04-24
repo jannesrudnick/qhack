@@ -1,7 +1,6 @@
 'use client';
 
 import type React from 'react';
-
 import { cn } from '@/lib/utils';
 import { addMinutes, differenceInMinutes, format, parseISO } from 'date-fns';
 import { useState } from 'react';
@@ -22,7 +21,7 @@ interface TimelineProps {
   onTimeClick?: (time: string) => void;
 }
 
-export function Timeline({
+export const Timeline = ({
   startTime,
   endTime,
   markers,
@@ -30,7 +29,7 @@ export function Timeline({
   className,
   selectedTime,
   onTimeClick,
-}: TimelineProps) {
+}: TimelineProps) => {
   const [hoveredTime, setHoveredTime] = useState<string | null>(null);
 
   console.log('tt', startTime, endTime);

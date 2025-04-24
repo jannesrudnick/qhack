@@ -5,7 +5,7 @@ import { ISensorConfig } from './locations';
 import { Card, CardContent } from './ui/card';
 import { ChartContainer } from './ui/chart';
 
-function SensorOverlay({ sensorConfig, displayId }: { sensorConfig: ISensorConfig; displayId: string }) {
+export const SensorOverlay = ({ sensorConfig, displayId }: { sensorConfig: ISensorConfig; displayId: string }) => {
   const supabase = useSupabaseBrowser();
   const { data: sensorData } = useQuery(
     supabase
@@ -89,5 +89,3 @@ function SensorOverlay({ sensorConfig, displayId }: { sensorConfig: ISensorConfi
     </Card>
   );
 }
-
-export default SensorOverlay;

@@ -1,7 +1,7 @@
 import { subHours } from 'date-fns';
 import { Point } from './page';
 
-function Header({ points }: { points: Point[] }) {
+export const Header = ({ points }: { points: Point[] }) => {
   return (
     <>
       <div className="flex gap-4">
@@ -148,5 +148,3 @@ function Header({ points }: { points: Point[] }) {
     </>
   );
 }
-
-export default Header;

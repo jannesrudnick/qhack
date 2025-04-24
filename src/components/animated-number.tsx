@@ -28,7 +28,7 @@ export function AnimatedNumber({
           maximumFractionDigits,
         }}
         willChange
-        continuous
+        // continuous
       />
     );
   }

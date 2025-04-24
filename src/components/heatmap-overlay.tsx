@@ -9,7 +9,7 @@ type Props = {
   points: Point[];
 };
 
-export default function HeatmapOverlay({ width, height, points }: Props) {
+export const HeatmapOverlay = ({ width, height, points }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const heatmapRef = useRef<ReturnType<typeof h337.create> | null>(null);
 

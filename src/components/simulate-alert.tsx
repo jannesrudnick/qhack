@@ -1,7 +1,8 @@
+'use client';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useState } from 'react';
 
-function SimulateAlert() {
+export const SimulateAlert = () => {
   const supabase = useSupabaseBrowser();
   const [locationShelfIdx, setLocationShelfIdx] = useState('');
   const [locationSensorIdx, setLocationSensorIdx] = useState('');
@@ -56,5 +57,3 @@ function SimulateAlert() {
     </div>
   );
 }
-
-export default SimulateAlert;

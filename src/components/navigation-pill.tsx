@@ -5,7 +5,7 @@ interface Props {
 
 const modes = ['overview', 'temperature', 'incidents'] as const;
 
-function NavigationPill({ displayMode, setDisplayMode }: Props) {
+export const NavigationPill = ({ displayMode, setDisplayMode }: Props) => {
   return (
     <div className="bg-white rounded-full p-1.5 flex gap-1 cursor-pointer">
       {modes.map((mode) => (
@@ -22,5 +22,3 @@ function NavigationPill({ displayMode, setDisplayMode }: Props) {
     </div>
   );
 }
-
-export default NavigationPill;

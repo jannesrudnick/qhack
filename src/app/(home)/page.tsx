@@ -1,17 +1,17 @@
 'use client';
-import FloorMap, { IMeasurementsContextValue, MeasurementsContext } from '@/components/floor-map';
-import HeatmapOverlay from '@/components/heatmap-overlay';
-import IconButton from '@/components/icon-button';
+import { FloorMap, IMeasurementsContextValue, MeasurementsContext } from '@/components/floor-map';
+import { HeatmapOverlay } from '@/components/heatmap-overlay';
+import { IconButton } from '@/components/icon-button';
 import { ISensorConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
-import NavigationPill from '@/components/navigation-pill';
-import TimeLineWrapper from '@/components/timeline-wrapper';
+import { NavigationPill } from '@/components/navigation-pill';
+import { TimeLineWrapper } from '@/components/timeline-wrapper';
 import { Switch } from '@/components/ui/switch';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { EllipsisVertical, LucideMap, MapPin, User2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import Header from './header';
-import TopSpoiledFoods from './top-spoiled-foods';
+import { Header } from './header';
+import { TopSpoiledFoods } from './top-spoiled-foods';
 import { AlertList } from './alert-list';
 
 export type Point = {

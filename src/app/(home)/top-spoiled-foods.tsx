@@ -1,4 +1,5 @@
-function TopSpoiledFoods() {
+
+export const TopSpoiledFoods = () => {
   return (
     <div className="glass-card p-4">
       <p className="font-bold">Top wasted products</p>
@@ -59,5 +60,3 @@ function TopSpoiledFoods() {
     </div>
   );
 }
-
-export default TopSpoiledFoods;
