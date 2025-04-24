@@ -1,38 +1,19 @@
-import IconButton from '@/components/icon-button';
-import { EllipsisVertical, LucideMap, User2 } from 'lucide-react';
-import { Point } from './page';
 import { subHours } from 'date-fns';
-
+import { Point } from './page';
 
 function Header({ points }: { points: Point[] }) {
   return (
     <>
-      <div className="flex justify-between">
-        <div className="h-14 bg-white rounded-full px-4 flex items-center justify-center">
-          Unser<b>Logo</b>
-        </div>
-        <div className="flex gap-4 items-center">
-          <IconButton icon={<LucideMap />} />
-          <IconButton icon={<User2 />} />
-          <IconButton icon={<EllipsisVertical />} />
-        </div>
-      </div>
-      <div className="flex justify-between">
-        <div className="flex items-center my-6">
-          <div className="flex flex-col">
-            <p className="text-gray-500">Comprehensive Insights</p>
-            <p className="font-bold">Executive Overview</p>
-          </div>
-          <div className="ml-auto"></div>
-        </div>
-        <div className="ml-auto"></div>
-      </div>
       <div className="flex gap-4">
-        <div className="glass-card">
-          <h2 className="text-2xl font-bold">{((points || [])?.reduce((acc, point) => acc + point.value, 0) / (points?.length || 1)).toLocaleString(undefined, {
-            maximumFractionDigits: 2,
-            minimumFractionDigits: 2,
-          })}
+        <div className="glass-card p-6">
+          <h2 className="text-2xl font-bold">
+            {((points || [])?.reduce((acc, point) => acc + point.value, 0) / (points?.length || 1)).toLocaleString(
+              undefined,
+              {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2,
+              },
+            )}
           </h2>
           <p className="text-gray-500">Durchschnittlicher VOC</p>
           <div className="flex items-center gap-2 mt-4">
@@ -40,18 +21,26 @@ function Header({ points }: { points: Point[] }) {
               <>
                 {(() => {
                   const now = new Date();
-                  const recentPoints = points.filter(p => p.createdAt > subHours(now, 12)).sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime()).filter(p => p.value !== 0);
+                  const recentPoints = points
+                    .filter((p) => p.createdAt > subHours(now, 12))
+                    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+                    .filter((p) => p.value !== 0);
                   if (recentPoints.length < 2) return null;
-                  const change = ((recentPoints[0].value - recentPoints.at(-1)!.value) / recentPoints.at(-1)!.value) * 100;
+                  const change =
+                    ((recentPoints[0].value - recentPoints.at(-1)!.value) / recentPoints.at(-1)!.value) * 100;
                   const isPositive = change > 0;
-                  
+
                   return (
                     <>
-                      <span className={`text-xs ${isPositive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} px-2 py-1 rounded-full`}>
-                        {isPositive ? '+' : ''}{change.toLocaleString(undefined, {
+                      <span
+                        className={`text-xs ${isPositive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} px-2 py-1 rounded-full`}
+                      >
+                        {isPositive ? '+' : ''}
+                        {change.toLocaleString(undefined, {
                           maximumFractionDigits: 2,
                           minimumFractionDigits: 2,
-                        })}%
+                        })}
+                        %
                       </span>
                       <span className="text-xs text-gray-500">vs. 12h ago</span>
                     </>
@@ -61,30 +50,43 @@ function Header({ points }: { points: Point[] }) {
             )}
           </div>
         </div>
-        <div className="glass-card">
-          <h2 className="text-2xl font-bold">{((points || [])?.reduce((acc, point) => acc + point.value_temperature, 0) / (points?.length || 1)).toLocaleString(undefined, {
-            maximumFractionDigits: 2,
-            minimumFractionDigits: 2,
-          })}
+        <div className="glass-card p-6">
+          <h2 className="text-2xl font-bold">
+            {(
+              (points || [])?.reduce((acc, point) => acc + point.value_temperature, 0) / (points?.length || 1)
+            ).toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            })}
           </h2>
           <p className="text-gray-500">Durchschnittliche Temperatur</p>
           <div className="flex items-center gap-2 mt-4">
-          {points && points.length > 0 && (
+            {points && points.length > 0 && (
               <>
                 {(() => {
                   const now = new Date();
-                  const recentPoints = points.filter(p => p.createdAt > subHours(now, 12)).sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime()).filter(p => p.value_temperature !== 0);
+                  const recentPoints = points
+                    .filter((p) => p.createdAt > subHours(now, 12))
+                    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+                    .filter((p) => p.value_temperature !== 0);
                   if (recentPoints.length < 2) return null;
-                  const change = ((recentPoints[0].value_temperature - recentPoints.at(-1)!.value_temperature) / recentPoints.at(-1)!.value_temperature) * 100;
+                  const change =
+                    ((recentPoints[0].value_temperature - recentPoints.at(-1)!.value_temperature) /
+                      recentPoints.at(-1)!.value_temperature) *
+                    100;
                   const isPositive = change > 0;
-                  
+
                   return (
                     <>
-                      <span className={`text-xs ${isPositive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} px-2 py-1 rounded-full`}>
-                        {isPositive ? '+' : ''}{change.toLocaleString(undefined, {
+                      <span
+                        className={`text-xs ${isPositive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} px-2 py-1 rounded-full`}
+                      >
+                        {isPositive ? '+' : ''}
+                        {change.toLocaleString(undefined, {
                           maximumFractionDigits: 2,
                           minimumFractionDigits: 2,
-                        })}%
+                        })}
+                        %
                       </span>
                       <span className="text-xs text-gray-500">vs. 12h ago</span>
                     </>
@@ -94,30 +96,43 @@ function Header({ points }: { points: Point[] }) {
             )}
           </div>
         </div>
-        <div className="glass-card">
-          <h2 className="text-2xl font-bold">{((points || [])?.reduce((acc, point) => acc + point.value_humidity, 0) / (points?.length || 1)).toLocaleString(undefined, {
-            maximumFractionDigits: 2,
-            minimumFractionDigits: 2,
-          })}
+        <div className="glass-card p-6">
+          <h2 className="text-2xl font-bold">
+            {(
+              (points || [])?.reduce((acc, point) => acc + point.value_humidity, 0) / (points?.length || 1)
+            ).toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            })}
           </h2>
           <p className="text-gray-500">Durchschnittliche Luftfeuchtigkeit</p>
           <div className="flex items-center gap-2 mt-4">
-          {points && points.length > 0 && (
+            {points && points.length > 0 && (
               <>
                 {(() => {
                   const now = new Date();
-                  const recentPoints = points.filter(p => p.createdAt > subHours(now, 12)).sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime()).filter(p => p.value_humidity !== 0);
+                  const recentPoints = points
+                    .filter((p) => p.createdAt > subHours(now, 12))
+                    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+                    .filter((p) => p.value_humidity !== 0);
                   if (recentPoints.length < 2) return null;
-                  const change = ((recentPoints[0].value_humidity - recentPoints.at(-1)!.value_humidity) / recentPoints.at(-1)!.value_humidity) * 100;
+                  const change =
+                    ((recentPoints[0].value_humidity - recentPoints.at(-1)!.value_humidity) /
+                      recentPoints.at(-1)!.value_humidity) *
+                    100;
                   const isPositive = change > 0;
-                  
+
                   return (
                     <>
-                      <span className={`text-xs ${isPositive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} px-2 py-1 rounded-full`}>
-                        {isPositive ? '+' : ''}{change.toLocaleString(undefined, {
+                      <span
+                        className={`text-xs ${isPositive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} px-2 py-1 rounded-full`}
+                      >
+                        {isPositive ? '+' : ''}
+                        {change.toLocaleString(undefined, {
                           maximumFractionDigits: 2,
                           minimumFractionDigits: 2,
-                        })}%
+                        })}
+                        %
                       </span>
                       <span className="text-xs text-gray-500">vs. 12h ago</span>
                     </>

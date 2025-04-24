@@ -1,12 +1,14 @@
 'use client';
 import FloorMap, { IMeasurementsContextValue, MeasurementsContext } from '@/components/floor-map';
 import HeatmapOverlay from '@/components/heatmap-overlay';
+import IconButton from '@/components/icon-button';
 import { ISensorConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
 import NavigationPill from '@/components/navigation-pill';
 import TimeLineWrapper from '@/components/timeline-wrapper';
 import { Switch } from '@/components/ui/switch';
 import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
+import { EllipsisVertical, LucideMap, User2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Header from './header';
 
@@ -47,7 +49,7 @@ const aggregatedIncidents = [
 export default function Home() {
   const supabase = useSupabaseBrowser();
   const [displayMode, setDisplayMode] = useState<'overview' | 'temperature' | 'incidents'>('overview');
-  const [liveMode, setLiveMode] = useState(false);
+  const [liveMode, setLiveMode] = useState(true);
 
   const [selectedTime, setSelectedTime] = useState<string>();
 
@@ -146,10 +148,30 @@ export default function Home() {
     <MeasurementsContext.Provider value={measurmentsCtxValue}>
       <div className="flex flex-col">
         <div className="min-h-screen w-full bg-linear-to-br from-[#C8D5DA] via-[#EBEBD0] to-[#C8D5DA] p-10">
+          <div className="flex justify-between">
+            <div className="h-14 bg-white rounded-full px-4 flex items-center justify-center">
+              Unser<b>Logo</b>
+            </div>
+            <div className="flex gap-4 items-center">
+              <IconButton icon={<LucideMap />} />
+              <IconButton icon={<User2 />} />
+              <IconButton icon={<EllipsisVertical />} />
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <div className="flex items-center my-6">
+              <div className="flex flex-col">
+                <p className="text-gray-500">Comprehensive Insights</p>
+                <p className="font-bold">Executive Overview</p>
+              </div>
+              <div className="ml-auto"></div>
+            </div>
+            <div className="ml-auto"></div>
+          </div>
           <Header points={points || []} />
           {displayMode !== 'incidents' ? (
             <>
-              <div className="flex items-center gap-4 my-4">
+              <div className="flex items-center gap-4 my-4 mt-12">
                 <Switch checked={liveMode} onCheckedChange={(v) => setLiveMode(v)} />
                 <span className="text-sm font-bold">live-mode</span>
                 {liveMode ? (
