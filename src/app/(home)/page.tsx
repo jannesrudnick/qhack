@@ -10,9 +10,9 @@ import { useSupabaseBrowser } from '@/lib/supabase/client';
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query';
 import { EllipsisVertical, LucideMap, MapPin, User2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { AlertList } from './alert-list';
 import { Header } from './header';
 import { TopSpoiledFoods } from './top-spoiled-foods';
-import { AlertList } from './alert-list';
 
 export type Point = {
   x: number;
@@ -152,12 +152,12 @@ export default function Home() {
         <div className="min-h-screen w-full bg-linear-to-br from-[#C8D5DA] via-[#EBEBD0] to-[#C8D5DA] p-10">
           <div className="flex justify-between">
             <div className="h-14 text-xl font-bold bg-white rounded-full px-4 flex items-center justify-center">
-            <span className="text-[#00B050] ">ECO</span>SHELF
+              <span className="text-[#00B050] ">ECO</span>SHELF
             </div>
             <div className="flex gap-4 items-center">
-              <IconButton icon={<LucideMap />} />
-              <IconButton icon={<User2 />} />
-              <IconButton icon={<EllipsisVertical />} />
+              <IconButton icon={<LucideMap size={18} />} />
+              <IconButton icon={<User2 size={18} />} />
+              <IconButton icon={<EllipsisVertical size={18} />} />
             </div>
           </div>
           <div className="flex justify-between">
@@ -231,12 +231,11 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4 mt-8">
             <TopSpoiledFoods />
             <AlertList />
           </div>
-
         </div>
       </div>
     </MeasurementsContext.Provider>
