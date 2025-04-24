@@ -26,8 +26,6 @@ export const HeatmapOverlay = ({ width, height, points }: Props) => {
     // Reset heatmap data
     heatmap.setData({ max: 1, data: [] });
 
-    console.log('points', points);
-
     // Set new data
     heatmap.setData({
       max: Math.max(1, ...points.map((p) => p.value ?? 1)),

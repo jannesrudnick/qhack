@@ -147,4 +147,4 @@ export const Header = ({ points }: { points: Point[] }) => {
       </div>
     </>
   );
-}
+};

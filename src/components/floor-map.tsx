@@ -70,11 +70,6 @@ export interface SensorProps {
 const Sensor = (props: SensorProps) => {
   const { config, selectedTime } = props;
 
-  const location = `${config.shelfIdx}_${config.floor}_${config.inShelfIdx}`;
-  const ctx = useContext(MeasurementsContext);
-
-  const measurement = ctx?.relevantBySensor.get(location);
-
   const supabase = useSupabaseBrowser();
   const { data: sensorData, refetch } = useQuery(getLiveMeasurements(supabase, config, selectedTime));
   const { data: activeAlerts, refetch: refetchAlerts } = useQuery(
@@ -128,8 +123,6 @@ const Sensor = (props: SensorProps) => {
         'absolute shadow-xl aspect-square rounded-full text-white px-2 z-0 text-sm w-10 text-center flex items-center justify-center',
         activeAlerts && hasAlert && !selectedTime ? 'bg-red-500' : 'bg-slate-700',
       )}
-      data-value={measurement?.value}
-      data-location={location}
       style={{
         left: boxCoords(config.position.left) - 2 * 10,
         top: boxCoords(config.position.top) - 2 * 10,
@@ -178,6 +171,7 @@ const Shelf = (props: ShelfProps) => {
 };
 
 export const FloorMap = ({ selectedTime }: { selectedTime?: string }) => {
+  // calculate the size of the floor map
   const sizes = useMemo(() => {
     const r: Record<'width' | 'height', number> = {
       width: 0,
@@ -193,7 +187,7 @@ export const FloorMap = ({ selectedTime }: { selectedTime?: string }) => {
   }, []);
 
   return (
-    <div id="flor-map" className="overflow-x-scroll no-scrollbar">
+    <div id="floor-map" className="overflow-x-scroll no-scrollbar">
       <div className="p-4">
         <div
           className="relative"
