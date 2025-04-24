@@ -20,6 +20,33 @@ export type Point = {
   createdAt: Date;
 };
 
+
+const aggregatedIncidents = [
+  { x: 0, y: 0, value: 0 },
+  { x: 0.1, y: 0.3, value: 4 },
+  { x: 0.2, y: 0.31, value: 1 },
+  { x: 0.3, y: 0.41, value: 2 },
+  { x: 0.2, y: 0.21, value: 1 },
+  { x: 0.2, y: 0.41, value: 1 },
+  { x: 0.1, y: 0.41, value: 2 },
+  { x: 0.1, y: 0.21, value: 1 },
+  { x: 0.1, y: 0.31, value: 2 },
+  { x: 0.1, y: 0.41, value: 1 },
+  { x: 0.45, y: 0.51, value: 1 },
+  { x: 0.45, y: 0.21, value: 2 },
+  { x: 0.45, y: 0.41, value: 1 },
+  { x: 0.45, y: 0.11, value: 1 },
+  { x: 0.75, y: 0.21, value: 5 },
+  { x: 0.65, y: 0.21, value: 3 },
+  { x: 0.65, y: 0.31, value: 3 },
+  { x: 0.65, y: 0.41, value: 2 },
+  { x: 0.65, y: 0.51, value: 2 },
+  { x: 0.92, y: 0.21, value: 2 },
+  { x: 0.92, y: 0.41, value: 3 },
+  { x: 0.94, y: 0.61, value: 2 },
+];
+
+
 export default function Home() {
   const supabase = useSupabaseBrowser();
 
@@ -35,12 +62,21 @@ export default function Home() {
     }
   }, []);
 
-  console.log('selectedTime',selectedTime);
+  console.log('selectedTime', selectedTime);
 
   const { data: measurements } = useQuery(supabase.from('measurements_simulation').select());
-  const { data: latestMeasurements, isLoading } = useQuery(supabase.rpc('get_latest_measurements', selectedTime ? {
-    before_time: selectedTime!,
-  } : undefined).select());
+  const { data: latestMeasurements, isLoading } = useQuery(
+    supabase
+      .rpc(
+        'get_latest_measurements',
+        selectedTime
+          ? {
+              before_time: selectedTime!,
+            }
+          : undefined,
+      )
+      .select(),
+  );
 
   const points = useMemo(() => {
     const map = new Map<string, ISensorConfig>();
@@ -122,12 +158,28 @@ export default function Home() {
             setSelectedTime={setSelectedTime}
             selectedTime={selectedTime}
           />
-          <div ref={heatmapRef} className="mb-4 dots glass-card relative overflow-hidden">
-            <FloorMap selectedTime={selectedTime} />
-            <div className="absolute inset-0 pointer-events-none pointer-none">
-              {heatmapSize.width > 0 && heatmapSize.height > 0 && (
-                <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points || []} />
-              )}
+          <div className="mb-4 dots glass-card relative overflow-hidden">
+            <div ref={heatmapRef} className="relative w-full">
+              <FloorMap selectedTime={selectedTime} />
+              <div className="absolute inset-0 pointer-events-none pointer-none">
+                {heatmapSize.width > 0 && heatmapSize.height > 0 && false && (
+                  <HeatmapOverlay width={heatmapSize.width} height={heatmapSize.height} points={points || []} />
+                )}
+                {heatmapSize.width > 0 && heatmapSize.height > 0 && aggregatedIncidents && (
+                  <HeatmapOverlay
+                    width={heatmapSize.width}
+                    height={heatmapSize.height}
+                    points={aggregatedIncidents || []}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="border px-6 flex items-center justify-center mb-4 mt-2">
+              <div className="bg-white rounded-full p-1 flex gap-1">
+                <div className="bg-[#E8F15C] text-black rounded-full px-3 py-1.5 cursor-pointer">Overview</div>
+                <div className="bg-white text-gray-500 rounded-full px-3 py-1.5 cursor-pointer">Temperatur</div>
+                <div className="bg-white text-gray-500 rounded-full px-3 py-1.5 cursor-pointer">Incidents</div>
+              </div>
             </div>
           </div>
           <div className="flex gap-4 hidden">
