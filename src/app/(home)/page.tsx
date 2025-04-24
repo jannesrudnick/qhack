@@ -2,6 +2,7 @@
 import { CreateStock } from '@/components/create-stock';
 import FloorMap, { IMeasurementsContextValue, MeasurementsContext } from '@/components/floor-map';
 import HeatmapOverlay from '@/components/heatmap-overlay';
+import { ISensorConfig, SensorConfigs, ShelfConfigs } from '@/components/locations';
 import SimulateAlert from '@/components/simulate-alert';
 import TimeLineWrapper from '@/components/timeline-wrapper';
 import { Button } from '@/components/ui/button';
